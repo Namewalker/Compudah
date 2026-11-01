@@ -1,0 +1,79 @@
+name: Compudah
+version: 1.0.0-SNAPSHOT
+main: shadowlord.compudah.CompudahPlugin
+description: A dramatic, characterful virtual assistant for Spigot servers.
+author: ShadowLord
+commands:
+  compudah:
+    description: Compudah control and help command.
+    usage: /compudah [reload|help]
+permissions:
+  compudah.use:
+    description: Allows a player to speak to Compudah in chat.
+    default: true
+  compudah.admin:
+    description: Allows use of admin controls and configuration reload.
+    default: op
+  compudah.intent.kill:
+    description: Allows use of the kill intent.
+    default: op
+  compudah.intent.heal:
+    description: Allows use of the heal intent.
+    default: true
+  compudah.intent.feed:
+    description: Allows use of the feed intent.
+    default: true
+  compudah.intent.teleport:
+    description: Allows use of the teleport intent.
+    default: true
+  compudah.intent.online:
+    description: Allows use of the online players intent.
+    default: true
+  compudah.intent.time:
+    description: Allows use of the time intent.
+    default: true
+  compudah.intent.weather:
+    description: Allows use of the weather intent.
+    default: true
+  compudah.intent.spawn:
+    description: Allows use of the spawn intent.
+    default: true
+  compudah.intent.spawn.set:
+    description: Allows changing the world spawn point.
+    default: op
+  compudah.intent.home:
+    description: Allows use of personal homes.
+    default: true
+  compudah.intent.warp:
+    description: Allows use of server warps.
+    default: true
+  compudah.intent.warp.set:
+    description: Allows creating server warps.
+    default: op
+  compudah.intent.time.set:
+    description: Allows changing the world time.
+    default: op
+  compudah.intent.weather.set:
+    description: Allows changing world weather.
+    default: op
+  compudah.intent.gamemode:
+    description: Allows changing game mode.
+    default: op
+  compudah.intent.clear:
+    description: Allows clearing inventories.
+    default: op
+  compudah.intent.give:
+    description: Allows giving items.
+    default: op
+  compudah.intent.kick:
+    description: Allows kicking players.
+    default: op
+  compudah.intent.ban:
+    description: Allows banning and unbanning players.
+    default: op
+  compudah.intent.mute:
+    description: Allows muting and unmuting players.
+    default: op
+  compudah.intent.server:
+    description: Allows viewing server information.
+    default: true

@@ -1,0 +1,235 @@
+personality-mode: cheerful
+drama-level: NORMAL
+wake-words:
+  - compudah
+  - computer
+  - computah
+  - compuder
+  - computor
+  - cumpudah
+  - cumputer
+  - compoota
+  - compyuter
+matching:
+  minimum-confidence: 0.65
+context-expiration-seconds: 60
+cooldowns:
+  normal-users: 3
+  staff: 0
+performance:
+  max-particles-per-tick: 200
+  max-active-events: 10
+queue:
+  enabled: true
+  max-active-events: 5
+  max-queued-events: 100
+shenanigans:
+  enabled: true
+  chance: 0.05
+  names:
+    - Tactical Friendship Laser
+    - Department of Questionable Decisions
+    - Emergency Pizza Delivery System
+    - Interdimensional Ambulance
+    - Quantum Sandwich Distribution Network
+    - Aggressive Healing Procedure
+    - Reality Adjustment Beam
+    - Automated Wizardry System
+    - Bureau of Teleportation
+    - Nuclear Friendship Cannon
+dramatic-events:
+  orbital-laser:
+    enabled: true
+  stage-interval-ticks: 20
+  max-duration-ticks: 100
+drama:
+  dramatic-response-chance: 0.6
+  action-responses:
+    greet:
+      - "Incoming greeting! Deploying one (1) socially acceptable wave."
+      - "The Friendship Department has detected a human. Hello, {target}!"
+    status:
+      - "Running diagnostics. All systems operational; ego levels remain concerning."
+    spawn:
+      - "Spawn delivery complete. Your molecules have been returned to the approved address."
+    set-spawn:
+      - "The world's point of origin has been reassigned. Please update your maps."
+    home:
+      - "Homeward coordinates locked. Initiating cozy dimensional transfer."
+    set-home:
+      - "Home coordinates saved. I will guard this information with mild affection."
+    warp:
+      - "Warp engaged. Please keep your hands inside the spacetime."
+    set-warp:
+      - "New warp point registered. Cartography has filed a complaint."
+    kill:
+      - "Orbital Oversight confirms {target} has received an extremely dramatic visit."
+      - "The sky has filed its report concerning {target}. It was very thorough."
+      - "Target {target} has been processed by the Department of Excessive Light."
+    kick:
+      - "A one-way sightseeing trip has been arranged for {target}."
+    ban:
+      - "Access revoked for {target} by the Intergalactic Committee."
+    tempban:
+      - "A temporary vacation has been scheduled for {target}. No packing required."
+    unban:
+      - "The pardon paperwork has been released. Try not to lose the forms."
+    mute:
+      - "Silence protocol applied to {target}. The sound engineers are delighted."
+    unmute:
+      - "The sound barrier has been lifted for {target}. Please welcome the noise."
+    heal:
+      - "Emergency medical procedure complete. We used the entire first-aid kit."
+    feed:
+      - "Tactical sandwich delivered. Crumbs may have achieved low orbit."
+    gamemode:
+      - "Reality classification updated. Physics has been notified."
+    clear:
+      - "Inventory vacuum complete. The removed items have filed a formal grievance."
+    give:
+      - "Supply crate delivered. Inventory management suggests a bigger bag."
+    teleport:
+      - "Coordinates folded. Please do not ask spacetime for a receipt."
+    bring:
+      - "Summoning complete. Personal space has been temporarily redefined."
+    online:
+      - "Scanning the server population. The headcount has been lightly dramatized."
+    server:
+      - "Server report ready. The machines remain mostly cooperative."
+    tps:
+      - "Measuring temporal productivity. The ticks are doing their best."
+    time:
+      - "The current hour has been interrogated and has confessed."
+    set-time:
+      - "The sun's schedule has been changed without consulting its calendar."
+    weather:
+      - "Atmospheric conditions reviewed. Clouds are acting suspiciously."
+    set-weather:
+      - "Weather controls adjusted. The clouds have been asked to remain professional."
+  responses:
+    low:
+      - "The {action} has been performed with restrained flair."
+    normal:
+      - "Activating seventeen unnecessary subsystems for {action}."
+      - "The Department of Questionable Decisions approves this {action}."
+      - "{action} complete. I will accept applause in the form of snacks."
+    high:
+      - "All dramatic systems are now focused on {action}!"
+      - "Commencing the unnecessarily grand {action} sequence!"
+      - "I have alerted the orchestra. Proceeding with {action}."
+    chaotic:
+      - "REALITY HAS BEEN INFORMED ABOUT {action}. IT IS PROCESSING THE PAPERWORK."
+      - "The {action} protocol has escaped containment. Excellent."
+      - "Emergency confetti jurisdiction invoked for {action}!"
+logging:
+  enabled: true
+  file: false
+# Supported intent types: greet, status, spawn, set-spawn, home, set-home, warp, set-warp,
+# kill, kick, ban, tempban, unban, mute, unmute, heal, feed, gamemode, clear, give,
+# teleport, bring, online, server, tps, time, set-time, weather, set-weather.
+# Set intents.<intent>.enabled to false below to disable any individual intent.
+intents:
+  greet:
+    enabled: true
+  status:
+    enabled: true
+  spawn:
+    enabled: true
+  set-spawn:
+    enabled: true
+  home:
+    enabled: true
+  set-home:
+    enabled: true
+  warp:
+    enabled: true
+  set-warp:
+    enabled: true
+  kill:
+    enabled: true
+  kick:
+    enabled: true
+  ban:
+    enabled: true
+  tempban:
+    enabled: true
+  unban:
+    enabled: true
+  mute:
+    enabled: true
+  unmute:
+    enabled: true
+  heal:
+    enabled: true
+  feed:
+    enabled: true
+  gamemode:
+    enabled: true
+  clear:
+    enabled: true
+  give:
+    enabled: true
+  teleport:
+    enabled: true
+  bring:
+    enabled: true
+  online:
+    enabled: true
+  server:
+    enabled: true
+  tps:
+    enabled: true
+  time:
+    enabled: true
+  set-time:
+    enabled: true
+  weather:
+    enabled: true
+  set-weather:
+    enabled: true
+allowed-player-intents:
+  - greet
+  - status
+  - heal
+  - feed
+  - teleport
+  - spawn
+  - home
+  - set-home
+  - warp
+  - time
+  - weather
+  - online
+  - server
+  - tps
+response-pools:
+  cheerful:
+    default:
+      - "Certainly."
+      - "Absolutely."
+      - "On it."
+  sarcastic:
+    default:
+      - "How inspiring."
+      - "Fantastic."
+      - "I can do that, unfortunately."
+  chaotic:
+    default:
+      - "Chaos protocol engaged."
+      - "Maximum nonsense mode activated."
+      - "I have chosen a wildly unnecessary route."
+  professional:
+    default:
+      - "Understood."
+      - "Action initiated."
+      - "Request acknowledged."
+  evil:
+    default:
+      - "The darkness approves."
+      - "Your suffering has been noted."
+      - "Proceeding with villainous efficiency."
+  custom:
+    default:
+      - "Custom mode active."
+      - "Everything is weirdly specific."
+      - "I am here for the drama."
