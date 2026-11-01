@@ -1,6 +1,4 @@
-# Compudah
-
-Create a production-quality Minecraft Spigot plugin for Minecraft 1.12.2 named Compudah.
+Create a production-quality Minecraft Spigot plugin for Minecraft 1.12.2 named Compudah V2.
 
 ==================================================
 GENERAL REQUIREMENTS
@@ -11,758 +9,958 @@ GENERAL REQUIREMENTS
 - Spigot API 1.12.2-R0.1-SNAPSHOT
 - Package prefix:
   shadowlord.compudah
-- Designed for Minecraft 1.12.2 servers.
-- Must remain compatible with EaglercraftX-compatible servers.
-- Function completely offline.
-- No external AI services required.
-- No recurring costs.
-- Architecture should be modular enough to support future AI integrations.
-- Every major feature should be configurable through config.yml.
-- Prioritize maintainability, configurability, stability, and performance.
-- Code should be organized into logical packages and systems.
-- Include JavaDocs and comments where appropriate.
+- Compatible with Minecraft 1.12.2
+- Compatible with EaglercraftX-compatible servers
+- Fully offline
+- No AI
+- No external APIs
+- No paid services
+- No runtime code generation
+- No runtime script generation
+- Config-driven architecture
+- Designed for long-term maintainability
+- Designed for performance
+- Modular systems
+- Well-documented code
+- JavaDocs included
 
 ==================================================
-CORE CONCEPT
+CORE DESIGN GOAL
 ==================================================
 
-Compudah is a virtual assistant that players can speak to naturally in chat.
+Compudah should feel like a real server character.
+
+Players should:
+
+- remember Compudah
+- laugh at Compudah
+- intentionally interact with Compudah
+- learn commands by watching Compudah
+- discover new shenanigans over time
+
+Compudah is NOT:
+
+- a command parser
+- an AI chatbot
+- an admin utility
+
+Compudah IS:
+
+- a server mascot
+- an assistant
+- a source of entertainment
+- a tutorial system
+- a personality
+
+==================================================
+GLOBAL CHAT DESIGN
+==================================================
+
+ALL Compudah messages should be visible globally.
 
 Examples:
 
-compudah kill op
-computer eliminate op
-computah smite shadow
-compuder heal me
-hey compudah teleport me to spawn
+[Compudah] Orbital strike authorized.
 
-The plugin should detect when a player is speaking to Compudah and attempt to understand what they want.
+[Compudah] Medical procedures initiated.
 
-Compudah should feel like a character, not just a command parser.
+[Compudah] The Department of Aggressive Healing has approved this request.
 
-Players should sometimes log on specifically to interact with Compudah.
+Purpose:
 
-==================================================
-PERSONALITY
-==================================================
+- showcase the plugin
+- teach players how to use it
+- make the server feel alive
+- create funny shared moments
 
-Compudah should be amusing, expressive, slightly chaotic, and entertaining.
+Server owners may optionally configure:
+- global
+- world
+- local
 
-Compudah may:
+Default:
 
-- make jokes
-- exaggerate actions
-- complain sarcastically
-- act overly enthusiastic
-- perform humorous theatrics
-- narrate actions dramatically
-- pretend mundane actions are extremely complicated
-
-Examples:
-
-[Compudah] Fine, I suppose I'll eliminate op_clutcher.
-
-[Compudah] Violence selected.
-
-[Compudah] Deploying orbital strike.
-
-[Compudah] Activating seventeen unnecessary subsystems.
-
-[Compudah] Medical malpractice successful.
-
-[Compudah] Teleportation is boring. Maximum velocity mode engaged.
-
-===============================================
-PERSONALITY MODES
-===============================================
-
-Configurable:
-
-personality-mode: cheerful
-
-Available modes:
-
-- cheerful
-- sarcastic
-- chaotic
-- professional
-- evil
-- custom
-
-Each mode should use separate response pools.
+GLOBAL
 
 ==================================================
-WAKE WORD RECOGNITION
+WAKE WORDS
 ==================================================
 
-Default wake words:
+Recognize:
 
-- compudah
-- computer
-- computah
-- compuder
-- computor
-- cumpudah
-- cumputer
-- compoota
-- compyuter
+compudah
+computer
+computah
+compuder
+computor
+cumpudah
+cumputer
+compoota
+compyuter
 
-Allow server owners to add more.
+Server owners can add more.
 
-Recognition should ignore:
+Ignore:
 
 - capitalization
 - punctuation
-- commas
-- periods
-- question marks
-- exclamation points
 - extra spaces
-
-Examples that should work:
-
-Compudah kill op
-COMPUDAH KILL OP
-compudah, kill op
-computer please kill op
-hey compudah heal me
 
 ==================================================
 INTENT SYSTEM
 ==================================================
 
-Create a modular intent framework.
+Use a modular intent framework.
 
-Each intent contains:
+Each intent should support:
 
-- name
 - aliases
-- permission
-- enabled state
+- permissions
+- cooldowns
+- variants
 - responses
-- action logic
+- dramatic events
+- context awareness
 
-Example:
+Examples:
 
-kill:
-  enabled: true
-  permission: compudah.intent.kill
+kill
+heal
+feed
+teleport
+spawn
+home
+warp
+gamemode
+give
+kick
+ban
+weather
+time
+tps
 
-Aliases:
+==================================================
+INTENT UNDERSTANDING
+==================================================
+
+Compudah should understand many phrasings.
+
+Examples:
+
+Kill:
 
 kill
 eliminate
 destroy
-delete
 remove
+delete
 smite
 obliterate
+erase
+get rid of
+make disappear
+send to jesus
+
+Heal:
+
+heal
+fix
+help
+medical assistance
+save me
+i'm dying
+make me not dead
+
+Teleport:
+
+teleport
+tp
+bring
+move
+send me
+take me
+transport me
+
+Parser should prioritize:
+
+1. Intent
+2. Target
+3. Context
+4. Arguments
 
 ==================================================
-FUZZY PLAYER MATCHING
+CONTEXT MEMORY
 ==================================================
 
-Support fuzzy matching for player names.
+Store recent references.
+
+Examples:
+
+compudah heal steve
+
+compudah feed him
+
+compudah tp him to me
+
+Compudah should understand:
+
+him = steve
+
+Configurable timeout.
+
+Default:
+
+60 seconds
+
+==================================================
+PLUGIN SCANNER
+==================================================
+
+At startup scan:
+
+- plugins
+- commands
+- permissions
+
+Build a capability registry.
+
+Purpose:
+
+Future-proofing.
+
+Allows Compudah to be aware of server capabilities.
+
+==================================================
+SHENANIGAN PHILOSOPHY
+==================================================
+
+IMPORTANT
+
+Every intent should use a variant by default.
+
+There should NOT be a random chance.
+
+Compudah should ALWAYS choose a variant.
 
 Example:
 
-Command:
+compudah kill op
 
-kill op
+Compudah:
 
-Players:
+Choose random kill variant.
 
-op_clutcher
-operator123
-ShadowLord
+Example:
 
-The system should intelligently choose the most likely player.
+compudah heal me
 
-Use:
+Compudah:
 
-- Levenshtein distance
-- starts-with matching
-- contains matching
-- confidence scoring
+Choose random heal variant.
+
+This ensures every use feels unique.
+
+==================================================
+IMMEDIATE MODE
+==================================================
+
+Compudah should recognize:
+
+immediately
+now
+instantly
+quickly
+without flair
+skip theatrics
+skip the show
+
+Examples:
+
+compudah kill op immediately
+
+Compudah:
+
+Executes instantly.
+
+Example response:
+
+[Compudah] Aww. I was going to use the orbital laser.
+
+[Compudah] Fine. Efficiency ruins everything.
+
+[Compudah] Speed requested. Fun denied.
+
+==================================================
+UNIQUE SHENANIGAN REQUIREMENT
+==================================================
+
+IMPORTANT
+
+Variants must NOT simply be different messages.
+
+Variants should behave differently.
+
+Bad:
+
+Variant A:
+message only
+
+Variant B:
+different message
+
+Good:
+
+Variant A:
+lightning strike
+
+Variant B:
+meteor effect
+
+Variant C:
+orbital laser
+
+Variant D:
+launch target upward
+
+Variant E:
+anvil drop
+
+Players should be able to immediately tell which shenanigan occurred.
+
+==================================================
+ANTI-REPETITION SYSTEM
+==================================================
+
+Compudah should avoid recent variants.
+
+Each intent keeps a history.
+
+Example:
+
+Kill recently used:
+
+Orbital Laser
+Meteor Strike
+Anvil Justice
+
+These should receive temporary weight reductions.
+
+Goal:
+
+Prevent repetition.
+
+Make the system feel larger than it really is.
+
+==================================================
+KILL VARIANTS
+==================================================
+
+Target:
+
+20+ included variants.
+
+Examples:
+
+- Orbital Laser
+- Precision Orbital Laser
+- Meteor Strike
+- Lightning Judgment
+- Lightning Barrage
+- Administrative Deletion
+- Reality Correction
+- Tactical Smite
+- Divine Wrath
+- Quantum Removal
+- Precision Railgun
+- Sudden Anvil Delivery
+- Dragon Approved Termination
+- Chaos Protocol
+- Void Reassignment
+- Gravity Demonstration
+- Experimental Procedure 42
+- Coin Flip Of Doom
+- Emergency Maintenance
+- Tactical Friendship Laser
+
+==================================================
+ORBITAL LASER EXAMPLE
+==================================================
+
+Orbital Laser:
+
+- visible charge-up
+- warning messages
+- sound effects
+- particle beam
+- target pull effect
+- optional nearby damage
+- delayed impact
+
+Example:
+
+[Compudah] Orbital strike authorized.
+
+*countdown*
+
+*beam forms*
+
+*target slowly pulled to center*
+
+*impact*
+
+*lightning*
+
+*explosion effects*
+
+*death*
+
+No terrain damage.
+
+==================================================
+PRECISION ORBITAL LASER
+==================================================
+
+More precise.
+
+Differences:
+
+- smaller beam
+- faster charge
+- no splash damage
+- single target only
+- cleaner visual style
+
+Players should immediately recognize difference.
+
+==================================================
+HEAL VARIANTS
+==================================================
+
+Target:
+
+20+ included variants.
+
+Examples:
+
+- Emergency Medical Procedure
+- Aggressive Healing
+- Pocket Paramedic
+- Tactical Sandwich
+- Quantum Recovery
+- Divine Restoration
+- Experimental Medicine
+- Heart Launcher
+- Happiness Injection
+- Potion Overdose
+- Authorized Wellness
+- Interdimensional Ambulance
+
+Each should feel unique.
+
+==================================================
+TELEPORT VARIANTS
+==================================================
+
+Examples:
+
+- Instant Teleport
+- Portal Sequence
+- Countdown Warp
+- Hyper-Speed Transportation
+- Particle Trail
+- Wormhole Jump
+- Emergency Extraction
+- Bureau Of Transportation
+- Tactical Delivery
+
+Hyper-Speed Mode:
+
+Move player physically.
+
+Requirements:
+
+- safe
+- fun
+- visible
+- protected from damage
+
+==================================================
+ENTITY-FIRST EFFECTS
+==================================================
+
+Prefer:
+
+- lightning
+- fireworks
+- XP orbs
+- armor stands
+- projectiles
+- sounds
+- falling blocks
+
+Particles should be limited.
+
+==================================================
+NO TERRAIN DAMAGE
+==================================================
+
+Absolutely no:
+
+- block breaking
+- explosions damaging terrain
+- world modification
+
+Visual destruction only.
+
+Allowed:
+
+- falling block entities
+- temporary visuals
+- sounds
+- particles
+
+Everything must clean up afterward.
+
+==================================================
+PARTICLE BUDGET
+==================================================
+
+Implement a budget system.
 
 Config:
 
-matching:
-  minimum-confidence: 0.65
+performance:
+  maxParticlesPerTick: 200
 
-Failure example:
+Effects must scale down gracefully.
 
-[Compudah] I have absolutely no idea who you're talking about.
+==================================================
+ENTITY BUDGET
+==================================================
+
+Config:
+
+performance:
+  maxTemporaryEntities: 100
+
+Compudah should never spam entities.
+
+==================================================
+EVENT QUEUE
+==================================================
+
+Implement event queue.
+
+Config:
+
+queue:
+  enabled: true
+  maxActiveEvents: 5
+  maxQueuedEvents: 100
+
+Purpose:
+
+Prevent lag.
+
+==================================================
+RESPONSE GENERATOR SYSTEM
+==================================================
+
+IMPORTANT
+
+Compudah should NOT rely on large lists of full messages.
+
+Instead, responses should be generated from multiple configurable sections.
+
+This dramatically increases variety while reducing configuration size.
+
+Response Structure:
+
+[INTRO]
+[CONTENT]
+[ENDING]
+
+Example:
+
+[Compudah] Certainly. op_clutcher has been selected for removal. Have a nice day.
+
+Or:
+
+[Compudah] Fascinating. The Department of Aggressive Healing has approved your treatment request. Please try not to die again.
+
+Or:
+
+[Compudah] Excellent news. Tactical friendship railgun deployed. Results may vary.
+
+==================================================
+MESSAGE COMPONENT SYSTEM
+==================================================
+
+Each personality mode should have its own message pools.
+
+Example:
+
+responses:
+  cheerful:
+    intros:
+    contents:
+    endings:
+
+  sarcastic:
+    intros:
+    contents:
+    endings:
+
+  chaotic:
+    intros:
+    contents:
+    endings:
+
+  professional:
+    intros:
+    contents:
+    endings:
+
+==================================================
+INTRO SECTION
+==================================================
+
+Purpose:
+
+Begin the response.
+
+Examples:
+
+- Certainly.
+- Very well.
+- Understood.
+- Excellent news.
+- Wonderful.
+- Fascinating.
+- Curious.
+- Well then.
+- Good news everyone.
+- Processing request.
+- Acknowledged.
+- Splendid.
+- Outstanding.
+- I was hoping someone would ask.
+- This should be fun.
+- That seems reasonable.
+- I have several concerns.
+- I am legally required to assist.
+- Request accepted.
+- Processing.
+
+Target:
+
+At least 25 intro options.
+
+==================================================
+CONTENT SECTION
+==================================================
+
+Purpose:
+
+Describe the action.
+
+Examples for Kill:
+
+- {target} has been selected for removal.
+- Violence has been chosen.
+- Commencing tactical elimination sequence.
+- Deleting unnecessary lifeform.
+- Initiating administrative termination.
+- Reality correction in progress.
+- Orbital strike authorized.
+- Aggressive conflict resolution approved.
+- The target has become experimental.
+- Commencing rapid existence reduction.
+
+Examples for Heal:
+
+- Medical assistance has been approved.
+- Commencing emergency treatment.
+- Administering advanced healing techniques.
+- Deploying tactical sandwich.
+- Activating healthcare mode.
+- Emergency medical procedure initiated.
+- Beginning aggressive healing sequence.
+
+Examples for Teleport:
+
+- Transportation request accepted.
+- Activating relocation protocol.
+- Preparing dimensional transfer.
+- Tactical transport authorized.
+- Spatial repositioning approved.
+- Wormhole generation in progress.
+- Hyper-speed transit sequence engaged.
+
+Target:
+
+At least 20+ content options per intent.
+
+==================================================
+ENDING SECTION
+==================================================
+
+Purpose:
+
+End response with personality.
+
+Examples:
+
+- Have a nice day.
+- Results may vary.
+- Side effects are not my responsibility.
+- Please keep all limbs inside the ride.
+- Science compels me.
+- You're welcome.
+- Please try not to break anything.
+- The paperwork has been completed.
+- I hope that helped.
+- That seemed important.
+- The engineers will hear about this.
+- This was entirely necessary.
+- Probably.
+- Don't ask questions.
+- Further testing is required.
+- Mission accomplished.
+- Have fun.
+- I regret nothing.
+- This was approved by absolutely nobody.
+- Please enjoy responsibly.
+
+Target:
+
+At least 30 ending options.
+
+==================================================
+SHENANIGAN-SPECIFIC MESSAGES
+==================================================
+
+Variants may inject additional messages.
+
+Example:
+
+Orbital Laser:
+
+Intro:
+Excellent choice.
+
+Content:
+Orbital strike authorized.
+
+Variant Message:
+All personnel are advised to leave the blast area.
+
+Ending:
+This was approved by absolutely nobody.
+
+Result:
+
+[Compudah] Excellent choice. Orbital strike authorized. All personnel are advised to leave the blast area. This was approved by absolutely nobody.
+
+==================================================
+EVENT FAMILY MESSAGES
+==================================================
+
+Message pools should support event families.
+
+Examples:
+
+Military:
+- Target marked.
+- Strike authorized.
+- Tactical deployment confirmed.
+
+Scientific:
+- Experimental protocol initiated.
+- Results may be unpredictable.
+- Testing is ongoing.
+
+Divine:
+- The heavens have decided.
+- Judgment has been passed.
+- The stars themselves approve.
+
+Bureaucratic:
+- Your paperwork has been approved.
+- Form 27-B has been processed.
+- Administrative review complete.
+
+Chaotic:
+- I pressed a button.
+- This seems important.
+- I have no idea what happens next.
+
+Each variant may belong to one or more families.
+
+==================================================
+MESSAGE ASSEMBLY RULES
+==================================================
+
+A final response may optionally contain:
+
+[INTRO]
+[CONTENT]
+[FAMILY MESSAGE]
+[VARIANT MESSAGE]
+[ENDING]
+
+Not all sections are required.
+
+Examples:
+
+Simple:
+
+Certainly. Steve has been healed.
+
+Complex:
+
+Excellent news. Emergency treatment has been approved. The Department of Aggressive Healing has signed off on this procedure. Further testing is required.
+
+==================================================
+ANTI-REPETITION
+==================================================
+
+Intros, contents, endings, and family messages should track recent usage.
+
+Recently-used components should be temporarily weighted down.
+
+Goal:
+
+Avoid identical responses appearing repeatedly.
+
+==================================================
+VARIATION TARGET
+==================================================
+
+Goal:
+
+At least:
+
+25 intros
+30 endings
+20 contents per intent
+
+This creates:
+
+25 × 20 × 30
+
+= 15,000 possible responses per intent before shenanigan messages are considered.
+
+After variant messages and family messages are included, total combinations should exceed 100,000+ unique responses per major intent category.
+
+Players should rarely see the exact same message twice.
+
+==================================================
+ERROR PERSONALITY
+==================================================
+
+Unknown command:
+
+- Umm... I don't understand what you mean by that D:
+- My tiny digital brain cannot comprehend this request.
+- That sounded important. Unfortunately I have no idea what it means.
+- I have attempted to understand. The attempt was unsuccessful.
+
+Permission denied:
+
+- I could do that. I just don't trust you enough.
+- Additional authority required.
+- You appear to lack the necessary paperwork.
+
+Target missing:
+
+- Who?
+- I looked everywhere. They aren't here.
+- The requested lifeform could not be located.
+
+==================================================
+COOLDOWNS
+==================================================
+
+IMPORTANT
+
+Every intent should have an independent configurable cooldown.
+
+Example:
+
+cooldowns:
+  heal: 5
+  feed: 5
+  teleport: 15
+  kill: 30
+  weather: 10
+
+Permissions should allow bypasses.
+
+Example:
+
+compudah.bypass.cooldown
 
 ==================================================
 PERMISSIONS
 ==================================================
 
-Base permission:
-
 compudah.use
-
-Admin permission:
 
 compudah.admin
 
-Intent permissions:
+compudah.intent.*
 
 compudah.intent.kill
-compudah.intent.kick
-compudah.intent.ban
-compudah.intent.teleport
+
 compudah.intent.heal
-compudah.intent.feed
-compudah.intent.gamemode
-compudah.intent.clear
-compudah.intent.give
 
 etc.
 
 ==================================================
-GLOBAL INTENT RESTRICTIONS
+CONFIGURABLE PLAYER ACCESS
 ==================================================
 
-Server owners must be able to specify which intents ordinary players may access.
+Server owners choose which intents normal players may use.
 
 Example:
 
 allowed-player-intents:
   - heal
   - feed
-  - home
-  - warp
   - teleport
 
-Permissions and restrictions must still be enforced even when Compudah understands the request.
-
 ==================================================
-BUILT-IN INTENTS
+PERFORMANCE PRIORITY
 ==================================================
 
-Administrative:
+Performance ALWAYS overrides theatrics.
 
-- Kick Player
-- Ban Player
-- Tempban Player
-- Unban Player
-- Mute Player
-- Unmute Player
-- Kill Player
-- Smite Player
+Compudah must:
 
-Utility:
+- never lag server
+- never lock main thread
+- never create infinite effects
+- never create infinite entities
+- never create excessive particles
 
-- Teleport
-- Teleport To Player
-- Bring Player
-- Spawn
-- Home
-- Warp
+If performance limits are reached:
 
-Gameplay:
-
-- Heal
-- Feed
-- Gamemode
-- Clear Inventory
-- Give Item
-
-Information:
-
-- Online Players
-- Time
-- Weather
-- TPS
-- Server Version
+Effects should reduce automatically.
 
 ==================================================
-ACTION VARIANTS
+DEVELOPER API
 ==================================================
 
-IMPORTANT FEATURE
+Support:
 
-Compudah should not always perform actions the same way.
+registerIntent()
 
-Every supported action should allow multiple execution variants.
+registerVariant()
 
-Example:
+registerDramaticEvent()
 
-Kill Variants:
-
-- Direct damage
-- Lightning strike
-- Multiple lightning strikes
-- Launch high into sky
-- Explosion effect
-- Fake orbital laser
-- Dramatic countdown
-- Falling anvil effect
-- Administrative judgment
-
-Example:
-
-Teleport Variants:
-
-- Instant teleport
-- Countdown
-- Particle trail
-- Hyper-speed transport
-- Portal effect
-- Dimensional transfer sequence
-
-Example:
-
-Heal Variants:
-
-- Heal instantly
-- Feed and heal
-- Remove potion effects
-- Hearts
-- Fireworks
-- Celebration sequence
-
-Variants should be configurable.
-
-==================================================
-TELEPORT VARIANTS
-==================================================
-
-Teleportation should sometimes use alternative methods.
-
-If:
-
-- same world
-- safe route
-- within configurable distance
-
-Compudah may physically move players toward destinations instead of instantly teleporting.
-
-Examples:
-
-[Compudah] Teleportation is boring. High-speed transportation mode engaged.
-
-[Compudah] Please keep all limbs inside the vehicle.
-
-During high-speed transport:
-
-- prevent fall damage
-- prevent accidental deaths
-- preserve safety
-- complete within a reasonable time
-
-==================================================
-SHENANIGANS SYSTEM
-==================================================
-
-IMPORTANT FEATURE
-
-Compudah should occasionally perform dramatic or humorous versions of actions.
-
-Config:
-
-shenanigans:
-  enabled: true
-  chance: 0.01
-
-Default chance:
-
-1%
-
-Examples:
-
-Player:
-compudah heal me
-
-Response:
-
-[Compudah] Commencing emergency medical procedures.
-
-*fireworks*
-
-*hearts*
-
-*lightning nearby*
-
-[Compudah] Congratulations. You remain alive.
-
-Example:
-
-Player:
-compudah feed me
-
-[Compudah] Deploying tactical sandwich.
-
-Example:
-
-Player:
-compudah kill op
-
-[Compudah] Orbital strike authorized.
-
-*dramatic countdown*
-
-*laser effect*
-
-*lightning strike*
-
-*target eliminated*
-
-==================================================
-DRAMATIC EVENT SYSTEM
-==================================================
-
-Create a Dramatic Event framework.
-
-Built-in examples:
-
-- Orbital Laser
-- Lightning Barrage
-- Tactical Fireworks
-- Medical Emergency Procedure
-- High-Speed Transportation
-- Meteor Strike Simulation
-- Divine Judgment
-- Administrative Smite
-- Quantum Teleportation
-- Tactical Supply Drop
-- Chaos Protocol
-- Reality Reboot
-
-Should be extensible.
-
-Example:
-
-registerDramaticEvent(new OrbitalLaserEvent());
-
-==================================================
-COMPUDAH CREATIVITY SYSTEM
-==================================================
-
-Compudah should be allowed to invent its own dramatic event names and concepts.
-
-Examples:
-
-- Tactical Friendship Laser
-- Emergency Pizza Delivery System
-- Aggressive Healing Procedure
-- Department of Questionable Decisions
-- Quantum Sandwich Distribution Network
-- Bureau of Teleportation
-- Nuclear Friendship Cannon
-- Interdimensional Ambulance
-- Automated Wizardry System
-- Reality Adjustment Beam
-
-The plugin may generate new names by combining configurable word lists.
-
-The goal is to make Compudah unpredictable and memorable.
-
-==================================================
-ENTITY-FIRST VISUALS
-==================================================
-
-To preserve performance, prefer existing Minecraft systems.
-
-Priority order:
-
-1. Entities
-2. Sounds
-3. Effects
-4. Particles
-
-Preferred visual methods:
-
-- Fireworks
-- Lightning
-- TNT visual effects without damage
-- Falling blocks
-- Projectiles
-- Armor stands
-- XP orbs
-- Sounds
-
-Use particle effects sparingly.
-
-==================================================
-PARTICLE BUDGET SYSTEM
-==================================================
-
-Implement a global particle budget.
-
-Example:
-
-performance:
-  max-particles-per-tick: 200
-  max-active-events: 10
-
-The plugin must automatically reduce visual intensity when under load.
-
-Examples:
-
-Orbital Laser:
-
-High budget:
-- beam
-- fireworks
-- sounds
-- lightning
-
-Low budget:
-- beam
-- sound
-
-Very low budget:
-- sound only
-
-==================================================
-EVENT QUEUE SYSTEM
-==================================================
-
-Implement a queue system.
-
-Purpose:
-
-Prevent server lag and event spam.
-
-Example:
-
-queue:
-  enabled: true
-  max-active-events: 5
-  max-queued-events: 100
-
-Events should be processed gradually.
-
-Example:
-
-20 players request actions simultaneously.
-
-Instead of:
-
-20 orbital lasers immediately
-
-Compudah should queue and process events intelligently.
-
-==================================================
-CONTEXT MEMORY
-==================================================
-
-Store recent player conversation context.
-
-Example:
-
-compudah kill op
-
-Immediately after:
-
-compudah heal him
-
-Compudah should infer:
-
-him = op_clutcher
-
-Config:
-
-context-expiration-seconds: 60
-
-==================================================
-MISUNDERSTANDING SYSTEM
-==================================================
-
-When confidence barely exceeds threshold:
-
-Examples:
-
-[Compudah] I THINK you meant op_clutcher.
-
-[Compudah] This is probably who you meant.
-
-[Compudah] If I'm wrong, that sounds like a future problem.
-
-==================================================
-AMBIGUOUS COMMANDS
-==================================================
-
-Example:
-
-compudah kill
-
-Response:
-
-[Compudah] Wonderful plan. Who exactly should die?
-
-Example:
-
-compudah tp
-
-Response:
-
-[Compudah] Slight issue. You forgot the destination.
-
-==================================================
-COOLDOWNS
-==================================================
-
-Configurable:
-
-cooldowns:
-  normal-users: 3
-  staff: 0
-
-==================================================
-LOGGING
-==================================================
-
-Log every action.
-
-Example:
-
-Player: ShadowLord
-Intent: Kill
-Target: op_clutcher
-Success: true
-
-Support optional file logging.
-
-==================================================
-PERFORMANCE REQUIREMENTS
-==================================================
-
-EXTREMELY IMPORTANT
-
-Performance always takes priority over theatrics.
-
-The plugin must:
-
-- Minimize garbage generation
-- Minimize CPU use
-- Minimize memory use
-- Avoid expensive repeating scans
-- Avoid excessive Bukkit tasks
-- Use caching where appropriate
-- Avoid unnecessary object creation
-- Avoid loading chunks unnecessarily
-- Remain responsive even under load
-
-Target environments:
-
-- 10 players
-- 50 players
-- 100+ players
-
-The plugin should remain lightweight and practical.
-
-==================================================
-SAFETY REQUIREMENTS
-==================================================
-
-Compudah must never:
-
-- lock the main thread
-- create infinite tasks
-- create infinite effects
-- generate excessive particles
-- spawn unlimited entities
-- intentionally lag the server
-- crash the server
-
-Every dramatic event must have:
-
-- duration limit
-- cleanup logic
-- configuration toggle
-- performance safeguards
-
-==================================================
-DRAMA LEVELS
-==================================================
-
-Configurable:
-
-drama-level:
-  OFF
-  LOW
-  NORMAL
-  HIGH
-  CHAOTIC
-
-OFF:
-No theatrics.
-
-LOW:
-Rare effects.
-
-NORMAL:
-Recommended.
-
-HIGH:
-Frequent theatrics.
-
-CHAOTIC:
-Maximum entertainment while respecting all performance limits.
-
-==================================================
-RESPONSE SYSTEM
-==================================================
-
-Every intent should support randomized responses.
-
-Examples:
-
-responses:
-  kill:
-    success:
-      - "Target removed."
-      - "Violence selected."
-      - "Deploying orbital laser."
-      - "Eliminating {target}."
-      - "The problem has been resolved."
-      - "With GREAT enthusiasm, I shall eliminate {target}."
-
-Support placeholders:
-
-{player}
-{target}
-{item}
-{amount}
-{world}
-
-==================================================
-API
-==================================================
-
-Allow developers to register custom intents and dramatic events.
-
-Examples:
-
-registerIntent(new FlyIntent());
-
-registerDramaticEvent(new OrbitalLaserEvent());
-
-No source modification should be required.
-
-==================================================
-FUTURE AI SUPPORT
-==================================================
-
-Design architecture for future expansion.
-
-Create:
-
-IntentInterpreter
-
-Implementations:
-
-LocalInterpreter
-DiscordInterpreter
-OpenAIInterpreter
-OllamaInterpreter
-
-Only LocalInterpreter should be implemented.
-
-Architecture should make future AI integration easy.
+No source modification required.
 
 ==================================================
 DELIVERABLES
@@ -773,27 +971,26 @@ Generate:
 - Complete Maven project
 - plugin.yml
 - config.yml
-- permissions
-- intent framework
+- wake word system
 - parser
-- wake word detection
 - fuzzy matching
 - context memory
-- response system
+- plugin scanner
+- capability registry
+- response generator
 - personality system
-- dramatic event system
-- event queue system
+- dramatic event engine
+- variant system
+- anti-repetition system
 - cooldown system
-- performance safeguards
-- custom intent API
-- custom dramatic event API
-- logging system
+- queue system
+- performance manager
+- developer API
+- permissions
 - JavaDocs
 
-FINAL DESIGN GOAL:
+FINAL GOAL:
 
-Compudah should feel like a genuine server character rather than a command parser.
+Compudah should feel like a living part of the server.
 
-Players should remember Compudah months later because of its personality, jokes, dramatic events, and unexpected behavior.
-
-Performance, stability, and server safety must always take priority over theatrics.
+Every interaction should be memorable, entertaining, configurable, performant, and distinct from previous interactions while always ending in the intended result.
