@@ -1,0 +1,323 @@
+# ====================================================================
+# BOX 1 OF 4: SYSTEM INITIALIZATION AND CORE CONFIGURATION LAYOUT
+# ====================================================================
+options:
+    prefix: &a&lSELL &8»&7
+
+command /sellgui:
+    permission: sellgui.use
+    permission message: {@prefix} &cYou do not have permission to use the Sell GUI!
+    trigger:
+        set {_gui} to a chest inventory with 2 rows named "&0Place items here to sell"
+        set slot 9 of {_gui} to red stained glass pane named "&c&lCANCEL TRANSACTION" with lore "&7Click here to cancel and||&7return all your items safely."
+        set slot 17 of {_gui} to lime stained glass pane named "&a&lCONFIRM &e&lSALE" with lore "&7Click here to sell all||&7eligible items instantly.||&bEstimated Value: &e$0.00"
+        set metadata value "in_sellgui" of player to true
+        open {_gui} to player
+
+on inventory click:
+    if metadata value "in_sellgui" of player is true:
+        if index of clicked slot is 9:
+            cancel event
+            close inventory of player
+            stop
+        if index of clicked slot is 17:
+            cancel event
+            set {_payout} to metadata value "sellgui_estimate" of player
+            if {_payout} is not set:
+                set {_payout} to 0
+            if {_payout} is greater than 0:
+                loop 9 times:
+                    set slot (loop-number - 1) of current inventory of player to air
+                add {_payout} to player's balance
+                send "{@prefix} &aSuccess! You sold your items for &e$%{_payout}%&a!" to player
+                delete metadata value "sellgui_estimate" of player
+                close inventory of player
+            else:
+                send "{@prefix} &cYou don't have any valuable items placed in the GUI yet!" to player
+            stop
+        if index of clicked slot is greater than 8:
+            if index of clicked slot is less than 17:
+                cancel event
+                stop
+        wait 1 tick
+        set {_live_total} to 0
+        loop 9 times:
+            set {_slot_num} to loop-number - 1
+            set {_item} to slot {_slot_num} of current inventory of player
+            if {_item} is not air:
+                set {_amount} to item amount of {_item}
+                set {_price} to 0
+                set {_name} to name of {_item}
+                set {_raw} to "%type of {_item}%"
+                if {_name} is set:
+                    if {_name} contains "Legendary Mace":
+                        set {_price} to 20000.00
+                    else if {_name} contains "Hunting Spear":
+                        set {_price} to 4000.00
+                    else if {_name} contains "Wind Charge":
+                        set {_price} to 0.10
+                    else if {_name} contains "1.16 Netherite Helmet":
+                        set {_price} to 30000.00
+                    else if {_name} contains "1.16 Netherite Chestplate":
+                        set {_price} to 30000.00
+                    else if {_name} contains "1.16 Netherite Leggings":
+                        set {_price} to 30000.00
+                    else if {_name} contains "1.16 Netherite Boots":
+                        set {_price} to 30000.00
+                    else if {_name} contains "1.16 Netherite Sword":
+                        set {_price} to 20000.00
+                if {_price} is 0:
+                    if {_raw} contains "bookshelf":
+                        set {_price} to 29.78
+                    else if {_raw} contains "hay":
+                        set {_price} to 11.82
+                    else if {_raw} contains "magma":
+                        set {_price} to 8.41
+                    else if {_raw} contains "packed ice":
+                        set {_price} to 3.38
+                    else if {_raw} contains "slime":
+                        set {_price} to 11.82
+
+# ====================================================================
+# BOX 2 OF 4: STRUCTURAL MATERIAL PACKETS AND STAINED BLOCKS
+# ====================================================================
+                    else if {_raw} contains "snow":
+                        set {_price} to 3.15
+                    else if {_raw} contains "soul sand":
+                        set {_price} to 2.50
+                    else if {_raw} contains "stone":
+                        set {_price} to 0.18
+                    else if {_raw} contains "tnt":
+                        set {_price} to 26.65
+                    else if {_raw} contains "glowstone":
+                        set {_price} to 7.35
+                    else if {_raw} contains "sea lantern":
+                        set {_price} to 16.54
+                    else if {_raw} contains "brick":
+                        set {_price} to 23.16
+                    else if {_raw} contains "cobblestone":
+                        set {_price} to 0.17
+                    else if {_raw} contains "concrete":
+                        set {_price} to 1.97
+                        if {_raw} contains "lime" or "magenta" or "orange" or "pink" or "purple":
+                            set {_price} to 7.72
+                    else if {_raw} contains "clay":
+                        set {_price} to 5.25
+                    else if {_raw} contains "dirt":
+                        set {_price} to 0.75
+                    else if {_raw} contains "grass":
+                        set {_price} to 2.00
+                    else if {_raw} contains "gravel":
+                        set {_price} to 2.00
+                    else if {_raw} contains "mycelium":
+                        set {_price} to 2.00
+                    else if {_raw} contains "end stone":
+                        set {_price} to 1.25
+                    else if {_raw} contains "glass":
+                        set {_price} to 1.58
+                        if {_raw} contains "pane":
+                            set {_price} to 0.63
+                    else if {_raw} contains "netherrack":
+                        set {_price} to 0.05
+                    else if {_raw} contains "obsidian":
+                        set {_price} to 7.82
+                    else if {_raw} contains "prismarine":
+                        set {_price} to 7.35
+                        if {_raw} contains "brick":
+                            set {_price} to 16.54
+                        else if {_raw} contains "dark":
+                            set {_price} to 16.02
+                    else if {_raw} contains "purpur":
+                        set {_price} to 0.83
+                    else if {_raw} contains "quartz":
+                        set {_price} to 8.27
+                        if {_raw} contains "block":
+                            set {_price} to 34.73
+                    else if {_raw} contains "sand":
+                        set {_price} to 1.50
+                        if {_raw} contains "red":
+                            set {_price} to 2.00
+                    else if {_raw} contains "sandstone":
+                        set {_price} to 3.00
+                    else if {_raw} contains "flower pot":
+                        set {_price} to 17.37
+                    else if {_raw} contains "jack o lantern":
+                        set {_price} to 2.80
+                    else if {_raw} contains "leaves" or "sapling":
+                        set {_price} to 0.75
+                    else if {_raw} contains "vine":
+                        set {_price} to 1.75
+                    else if {_raw} contains "dye":
+                        set {_price} to 0.27
+                        if {_raw} contains "cyan":
+                            set {_price} to 0.16
+                        else if {_raw} contains "gray":
+                            set {_price} to 0.91
+                        else if {_raw} contains "green":
+                            set {_price} to 0.03
+                        else if {_raw} contains "lime":
+                            set {_price} to 1.58
+                        else if {_raw} contains "purple":
+                            set {_price} to 0.28
+                        else if {_raw} contains "yellow":
+                            set {_price} to 0.18
+
+# ====================================================================
+# BOX 3 OF 4: NATURAL HARVESTS, FOODSTUFFS, AND MOB DROP MATRICES
+# ====================================================================
+                    else if {_raw} contains "flower" or "tulip" or "bluet" or "orchid":
+                        set {_price} to 0.25
+                    else if {_raw} contains "sunflower":
+                        set {_price} to 0.25
+                    else if {_raw} contains "seeds":
+                        set {_price} to 0.75
+                    else if {_raw} contains "mushroom":
+                        set {_price} to 0.50
+                    else if {_raw} contains "cactus":
+                        set {_price} to 0.03
+                    else if {_raw} contains "carrot" or "egg" or "potato" or "pumpkin" or "wheat":
+                        set {_price} to 1.25
+                    else if {_raw} contains "chorus":
+                        set {_price} to 0.75
+                        if {_raw} contains "flower":
+                            set {_price} to 0.25
+                    else if {_raw} contains "melon":
+                        set {_price} to 2.37
+                        if {_raw} contains "slice":
+                            set {_price} to 0.25
+                    else if {_raw} contains "sugar cane":
+                        set {_price} to 20.00
+                    else if {_raw} contains "apple":
+                        set {_price} to 2.50
+                    else if {_raw} contains "bread":
+                        set {_price} to 3.94
+                    else if {_raw} contains "cake":
+                        set {_price} to 60.17
+                    else if {_raw} contains "cookie":
+                        set {_price} to 0.53
+                    else if {_raw} contains "beef" or "chicken" or "mutton" or "porkchop":
+                        set {_price} to 1.50
+                        if {_raw} contains "cooked":
+                            set {_price} to 1.58
+                    else if {_raw} contains "fish" or "salmon" or "pufferfish":
+                        set {_price} to 1.50
+                        if {_raw} contains "cooked":
+                            set {_price} to 1.58
+                    else if {_raw} contains "golden carrot":
+                        set {_price} to 10.00
+                    else if {_raw} contains "golden apple":
+                        set {_price} to 50.00
+                    else if {_raw} contains "arrow":
+                        set {_price} to 0.57
+                    else if {_raw} contains "blaze":
+                        set {_price} to 1.25
+                        if {_raw} contains "powder":
+                            set {_price} to 0.66
+                    else if {_raw} contains "bone" or "feather":
+                        set {_price} to 1.50
+                    else if {_raw} contains "spider eye":
+                        set {_price} to 1.75
+                        if {_raw} contains "fermented":
+                            set {_price} to 2.40
+                    else if {_raw} contains "ghast":
+                        set {_price} to 10.00
+                    else if {_raw} contains "gunpowder":
+                        set {_price} to 3.88
+                    else if {_raw} contains "magma cream":
+                        set {_price} to 2.01
+                    else if {_raw} contains "rabbit":
+                        set {_price} to 1.50
+                        if {_raw} contains "foot":
+                            set {_price} to 45.00
+                        else if {_raw} contains "cooked":
+                            set {_price} to 1.58
+                    else if {_raw} contains "rotten":
+                        set {_price} to 1.25
+                    else if {_raw} contains "string":
+                        set {_price} to 1.75
+                    else if {_raw} contains "pearl":
+                        set {_price} to 5.00
+                    else if {_raw} contains "music disc":
+                        set {_price} to 18.75
+                    else if {_raw} contains "coal":
+                        set {_price} to 5.25
+
+# ====================================================================
+# BOX 4 OF 4: ORES, COMMODITIES, VALUABLES, AND SECURE MENU WINDOW SAFE
+# ====================================================================
+                    else if {_raw} contains "diamond":
+                        set {_price} to 52.50
+                        if {_raw} contains "block":
+                            set {_price} to 496.13
+                    else if {_raw} contains "emerald":
+                        set {_price} to 35.56
+                        if {_raw} contains "block":
+                            set {_price} to 336.01
+                    else if {_raw} contains "gold":
+                        set {_price} to 7.88
+                        if {_raw} contains "block":
+                            set {_price} to 74.42
+                    else if {_raw} contains "iron":
+                        set {_price} to 5.25
+                        if {_raw} contains "block":
+                            set {_price} to 49.62
+                    else if {_raw} contains "lapis":
+                        set {_price} to 3.61
+                        if {_raw} contains "block":
+                            set {_price} to 34.11
+                    else if {_raw} contains "redstone":
+                        set {_price} to 1.32
+                        if {_raw} contains "block":
+                            set {_price} to 12.41
+                    else if {_raw} contains "anvil":
+                        set {_price} to 100.00
+                    else if {_raw} contains "elytra":
+                        set {_price} to 20000.00
+                    else if {_raw} contains "nether star":
+                        set {_price} to 100.00
+                    else if {_raw} contains "beacon":
+                        set {_price} to 137.88
+                    else if {_raw} contains "leather":
+                        set {_price} to 8.40
+                    else if {_raw} contains "log":
+                        set {_price} to 0.75
+                    else if {_raw} contains "planks":
+                        set {_price} to 0.28
+                    else if {_raw} contains "wool":
+                        set {_price} to 7.35
+                    else if {_raw} contains "sword":
+                        set {_price} to 30.00
+                    else if {_raw} contains "axe":
+                        set {_price} to 20.00
+                    else if {_raw} contains "shield":
+                        set {_price} to 10.00
+                    else if {_raw} contains "bow":
+                        set {_price} to 5.00
+                    else if {_raw} contains "crystal":
+                        set {_price} to 10.00
+                    else if {_raw} contains "minecart":
+                        set {_price} to 20.00
+                    else if {_raw} contains "carpet":
+                        set {_price} to 5.15
+                    else if {_raw} contains "shulker box":
+                        set {_price} to 6.50
+                    else if {_raw} contains "banner":
+                        set {_price} to 46.46
+                    else if {_raw} contains "bed":
+                        set {_price} to 24.03
+                    else if {_raw} contains "potion":
+                        set {_price} to 12.00
+                if {_price} is greater than 0:
+                    add ({_price} * {_amount}) to {_live_total}
+        set metadata value "sellgui_estimate" of player to {_live_total}
+        set slot 17 of current inventory of player to lime stained glass pane named "&a&lCONFIRM &e&lSALE" with lore "&7Click here to sell all||&7eligible items instantly.||&bEstimated Value: &e$%{_live_total}%"
+
+on inventory close:
+    if metadata value "in_sellgui" of player is true:
+        delete metadata value "in_sellgui" of player
+        delete metadata value "sellgui_estimate" of player
+        loop 9 times:
+            set {_slot_num} to loop-number - 1
+            set {_item} to slot {_slot_num} of current inventory of player
+            if {_item} is not air:
+                give {_item} to player
