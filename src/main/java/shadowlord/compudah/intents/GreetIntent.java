@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 import shadowlord.compudah.CompudahPlugin;
 import shadowlord.compudah.core.IntentSupport;
+import shadowlord.compudah.api.IntentContext;
 
 public class GreetIntent extends AbstractIntent {
 
@@ -15,8 +16,11 @@ public class GreetIntent extends AbstractIntent {
 
     @Override
     public void execute(Player player, String[] arguments, CompudahPlugin plugin) {
-        String greeting = plugin.getPersonalityManager().pickResponse("greet", "Hello, human.");
-        plugin.getResponseManager().send(player, greeting + " I have been waiting for someone interesting to appear.");
         IntentSupport.complete(player, plugin, getName(), "social");
+    }
+
+    @Override
+    protected void executeRemote(IntentContext context, String[] arguments, CompudahPlugin plugin) {
+        IntentSupport.complete(context, plugin, getName(), context.getName());
     }
 }

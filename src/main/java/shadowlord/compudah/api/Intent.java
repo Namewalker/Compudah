@@ -18,6 +18,13 @@ public interface Intent {
 
     void execute(Player player, String[] arguments, CompudahPlugin plugin);
 
+    default void execute(IntentContext context, String[] arguments, CompudahPlugin plugin) {
+        if (context == null || context.getPlayer() == null) {
+            throw new UnsupportedOperationException("This intent requires an online player actor");
+        }
+        execute(context.getPlayer(), arguments, plugin);
+    }
+
     default boolean matches(String value) {
         String normalized = value == null ? "" : value.trim().toLowerCase();
         for (String alias : getAliases()) {

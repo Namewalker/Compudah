@@ -116,9 +116,13 @@ public class DramaticEventManager {
             return false;
         }
 
-        int configuredLimit = Math.min(plugin.getConfig().getInt("performance.max-active-events", 10),
-                plugin.getConfig().getInt("queue.max-active-events", 5));
+        int configuredLimit = Math.min(plugin.getConfig().getInt("performance.maxActiveEvents",
+                plugin.getConfig().getInt("performance.max-active-events", 10)),
+            plugin.getConfig().getInt("queue.maxActiveEvents", plugin.getConfig().getInt("queue.max-active-events", 5)));
         if (!plugin.getConfig().getBoolean("queue.enabled", true) || configuredLimit <= activeSequences.size()) {
+            return false;
+        }
+        if (!plugin.getPerformanceManager().reserveEvent()) {
             return false;
         }
 
@@ -133,7 +137,7 @@ public class DramaticEventManager {
             @Override
             public void run() {
                 if (!target.isOnline() || !target.isValid()) {
-                    initiator.sendMessage("[Compudah] Target lock lost. The orbital bureaucracy has closed the case.");
+                    plugin.getResponseManager().send(initiator, "Target lock lost. The orbital bureaucracy has closed the case.");
                     finishSequence(taskReference[0]);
                     cancel();
                     return;
@@ -142,12 +146,14 @@ public class DramaticEventManager {
                 Location location = target.getLocation();
                 if (stage[0] == 0) {
                     announceNearby(target, "WARNING: ORBITAL STRIKE INCOMING. Please remain dramatically stationary.");
-                    initiator.sendMessage("[Compudah] Orbital targeting online. This is absolutely not overkill.");
+                    plugin.getResponseManager().send(initiator, "Orbital targeting online. This is absolutely not overkill.");
                     target.getWorld().playSound(location, Sound.ENTITY_WITHER_AMBIENT, 0.8F, 0.7F);
                 } else if (stage[0] == stages - 1) {
                     announceNearby(target, "1... ORBITAL LANCE DEPLOYED. Please enjoy this highly unnecessary light show.");
-                    target.getWorld().strikeLightningEffect(location);
-                    target.getWorld().playEffect(location, Effect.EXPLOSION_HUGE, 1);
+                    if (plugin.getPerformanceManager().consumeVisualBudget(2)) {
+                        target.getWorld().strikeLightningEffect(location);
+                        target.getWorld().playEffect(location, Effect.EXPLOSION_HUGE, 1);
+                    }
                     target.getWorld().playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 1.0F, 0.75F);
                     finalAction.run();
                     finishSequence(taskReference[0]);
@@ -155,14 +161,18 @@ public class DramaticEventManager {
                     return;
                 } else if (stage[0] == 1) {
                     announceNearby(target, "Target acquired. Checking orbital paperwork... (there is a lot of it)");
-                    target.getWorld().playEffect(location, Effect.FIREWORKS_SPARK, 1);
+                    if (plugin.getPerformanceManager().consumeVisualBudget(1)) {
+                        target.getWorld().playEffect(location, Effect.FIREWORKS_SPARK, 1);
+                    }
                     target.getWorld().playSound(location, Sound.BLOCK_NOTE_PLING, 0.8F, 1.8F);
                 } else if (stage[0] == 2) {
                     announceNearby(target, "Charging friendship-adjacent beam: 3... 2...");
                     target.getWorld().playSound(location, Sound.BLOCK_NOTE_PLING, 0.9F, 0.8F);
                 } else {
                     announceNearby(target, "1... Firing the extremely expensive-looking beam!");
-                    target.getWorld().playEffect(location, Effect.ENDER_SIGNAL, 1);
+                    if (plugin.getPerformanceManager().consumeVisualBudget(1)) {
+                        target.getWorld().playEffect(location, Effect.ENDER_SIGNAL, 1);
+                    }
                     target.getWorld().playSound(location, Sound.BLOCK_NOTE_PLING, 0.9F, 1.2F);
                 }
                 stage[0]++;
@@ -174,17 +184,14 @@ public class DramaticEventManager {
     }
 
     private void announceNearby(Player target, String message) {
-        Location center = target.getLocation();
-        for (Player viewer : target.getWorld().getPlayers()) {
-            if (viewer.getLocation().distanceSquared(center) <= 4096.0D) {
-                viewer.sendMessage("[Compudah] " + message);
-            }
-        }
+        plugin.getResponseManager().send(target, message);
     }
 
     private void finishSequence(BukkitTask task) {
         if (task != null) {
-            activeSequences.remove(task);
+            if (activeSequences.remove(task)) {
+                plugin.getPerformanceManager().releaseEvent();
+            }
         }
     }
 
@@ -221,10 +228,14 @@ public class DramaticEventManager {
             player.getWorld().playSound(location, Sound.BLOCK_NOTE_PLING, 0.55F, 1.2F);
         } else {
             player.getWorld().playSound(location, Sound.ENTITY_FIREWORK_TWINKLE, 0.7F, 1.0F);
-            player.getWorld().playEffect(location, Effect.FIREWORKS_SPARK, 1);
+            if (plugin.getPerformanceManager().consumeVisualBudget(1)) {
+                player.getWorld().playEffect(location, Effect.FIREWORKS_SPARK, 1);
+            }
             if ("HIGH".equals(level) || "CHAOTIC".equals(level)) {
-                player.getWorld().playEffect(location, Effect.ENDER_SIGNAL, 1);
-                player.getWorld().strikeLightningEffect(location);
+                if (plugin.getPerformanceManager().consumeVisualBudget(2)) {
+                    player.getWorld().playEffect(location, Effect.ENDER_SIGNAL, 1);
+                    player.getWorld().strikeLightningEffect(location);
+                }
             }
             if ("CHAOTIC".equals(level)) {
                 player.getWorld().playSound(location, Sound.ENTITY_ENDERMEN_TELEPORT, 0.7F, 1.5F);
@@ -251,7 +262,7 @@ public class DramaticEventManager {
                 responses = plugin.getConfig().getStringList("drama.responses." + level.toLowerCase(Locale.ENGLISH));
             }
             if (!responses.isEmpty()) {
-                player.sendMessage("[Compudah] " + responses.get(ThreadLocalRandom.current().nextInt(responses.size()))
+                plugin.getResponseManager().send(player, responses.get(ThreadLocalRandom.current().nextInt(responses.size()))
                         .replace("{action}", action == null ? "action" : action)
                     .replace("{target}", targetName == null ? "someone" : targetName));
             }
@@ -261,8 +272,10 @@ public class DramaticEventManager {
                 && ThreadLocalRandom.current().nextDouble() < Math.min(1.0D, shenaniganChance)) {
             List<String> names = plugin.getConfig().getStringList("shenanigans.names");
             String name = names.isEmpty() ? "Department of Questionable Decisions" : names.get(ThreadLocalRandom.current().nextInt(names.size()));
-            player.sendMessage("[Compudah] Shenanigans approved by the " + name + ".");
-            player.getWorld().playEffect(location, Effect.FIREWORKS_SPARK, 1);
+            plugin.getResponseManager().send(player, "Shenanigans approved by the " + name + ".");
+            if (plugin.getPerformanceManager().consumeVisualBudget(1)) {
+                player.getWorld().playEffect(location, Effect.FIREWORKS_SPARK, 1);
+            }
         }
     }
 }

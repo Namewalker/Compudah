@@ -1,5 +1,12 @@
-shadowlord/compudah/core/IntentRegistryTest.class
+shadowlord/compudah/core/CooldownManagerTest.class
 shadowlord/compudah/core/WakeWordDetectorTest.class
-shadowlord/compudah/core/FuzzyPlayerMatcherTest.class
 shadowlord/compudah/core/IntentRegistryTest$1.class
 shadowlord/compudah/core/PlayerContextMemoryTest.class
+shadowlord/compudah/core/IntentRegistryTest.class
+shadowlord/compudah/core/BuiltInVariantFactoryTest$1.class
+shadowlord/compudah/core/RecentChoiceSelectorTest.class
+shadowlord/compudah/core/FuzzyPlayerMatcherTest.class
+shadowlord/compudah/core/BuiltInVariantFactoryTest.class
+shadowlord/compudah/core/ChatAuthorityTest.class
+shadowlord/compudah/core/BuiltInVariantFactoryTest$StubIntent.class
+shadowlord/compudah/core/IntentContextTest.class

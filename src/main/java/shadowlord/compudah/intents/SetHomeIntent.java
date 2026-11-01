@@ -25,7 +25,6 @@ public class SetHomeIntent extends AbstractIntent {
         plugin.getConfig().set(path + ".yaw", location.getYaw());
         plugin.getConfig().set(path + ".pitch", location.getPitch());
         plugin.saveConfig();
-        plugin.getResponseManager().send(player, "Home saved. I have memorized your coordinates and will pretend this is not sentimental.");
         IntentSupport.complete(player, plugin, getName(), "home");
     }
 }

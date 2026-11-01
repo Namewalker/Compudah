@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 
 import shadowlord.compudah.CompudahPlugin;
 import shadowlord.compudah.core.IntentSupport;
+import shadowlord.compudah.api.IntentContext;
 
 public class GiveItemIntent extends AbstractIntent {
 
@@ -48,7 +49,40 @@ public class GiveItemIntent extends AbstractIntent {
             return;
         }
         player.getInventory().addItem(new ItemStack(material, amount));
-        plugin.getResponseManager().send(player, "Supply drop: " + amount + " " + material.name().toLowerCase(Locale.ENGLISH) + ". Try not to eat the packaging.");
         IntentSupport.complete(player, plugin, getName(), material.name() + " x" + amount);
+    }
+
+    @Override
+    protected void executeRemote(IntentContext context, String[] arguments, CompudahPlugin plugin) {
+        if (arguments == null || arguments.length < 2) {
+            plugin.getResponseManager().send(null, "Use: give <online player> <item> [amount].");
+            return;
+        }
+        Player target = IntentSupport.resolveTarget(context, new String[] {arguments[0]}, plugin);
+        if (target == null) {
+            plugin.getResponseManager().send(null, "I could not find that online player.");
+            return;
+        }
+        Material material;
+        try {
+            material = Material.valueOf(arguments[1].toUpperCase(Locale.ENGLISH));
+        } catch (IllegalArgumentException exception) {
+            plugin.getResponseManager().send(null, "I do not recognize that item in this version of Minecraft.");
+            return;
+        }
+        int amount = 1;
+        if (arguments.length > 2) {
+            try {
+                amount = Integer.parseInt(arguments[2]);
+            } catch (NumberFormatException exception) {
+                amount = 0;
+            }
+        }
+        if (!material.isItem() || amount < 1 || amount > 64) {
+            plugin.getResponseManager().send(null, "Choose an inventory item and an amount from 1 to 64.");
+            return;
+        }
+        target.getInventory().addItem(new ItemStack(material, amount));
+        IntentSupport.complete(context, plugin, getName(), target.getName() + " / " + material.name() + " x" + amount);
     }
 }

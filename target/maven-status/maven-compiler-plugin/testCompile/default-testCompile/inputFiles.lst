@@ -1,4 +1,9 @@
+/workspaces/Compudah/src/test/java/shadowlord/compudah/core/RecentChoiceSelectorTest.java
 /workspaces/Compudah/src/test/java/shadowlord/compudah/core/IntentRegistryTest.java
+/workspaces/Compudah/src/test/java/shadowlord/compudah/core/CooldownManagerTest.java
+/workspaces/Compudah/src/test/java/shadowlord/compudah/core/IntentContextTest.java
+/workspaces/Compudah/src/test/java/shadowlord/compudah/core/ChatAuthorityTest.java
 /workspaces/Compudah/src/test/java/shadowlord/compudah/core/PlayerContextMemoryTest.java
 /workspaces/Compudah/src/test/java/shadowlord/compudah/core/FuzzyPlayerMatcherTest.java
+/workspaces/Compudah/src/test/java/shadowlord/compudah/core/BuiltInVariantFactoryTest.java
 /workspaces/Compudah/src/test/java/shadowlord/compudah/core/WakeWordDetectorTest.java

@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 
 import shadowlord.compudah.CompudahPlugin;
 import shadowlord.compudah.core.IntentSupport;
+import shadowlord.compudah.api.IntentContext;
 
 public class UnbanIntent extends AbstractIntent {
 
@@ -23,7 +24,16 @@ public class UnbanIntent extends AbstractIntent {
         }
         String target = arguments[0];
         Bukkit.getBanList(BanList.Type.NAME).pardon(target);
-        plugin.getResponseManager().send(player, "Ban lifted for " + target + ". Redemption has been filed in triplicate.");
         IntentSupport.complete(player, plugin, getName(), target);
+    }
+
+    @Override
+    protected void executeRemote(IntentContext context, String[] arguments, CompudahPlugin plugin) {
+        if (arguments == null || arguments.length == 0) {
+            plugin.getResponseManager().send(null, "Name the player to unban.");
+            return;
+        }
+        Bukkit.getBanList(BanList.Type.NAME).pardon(arguments[0]);
+        IntentSupport.complete(context, plugin, getName(), arguments[0]);
     }
 }

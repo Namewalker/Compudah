@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import shadowlord.compudah.CompudahPlugin;
 import shadowlord.compudah.core.IntentSupport;
+import shadowlord.compudah.api.IntentContext;
 
 public class OnlinePlayersIntent extends AbstractIntent {
 
@@ -30,5 +31,16 @@ public class OnlinePlayersIntent extends AbstractIntent {
 
         plugin.getResponseManager().send(player, "Online players: " + String.join(", ", names));
         IntentSupport.complete(player, plugin, getName(), "server-list");
+    }
+
+    @Override
+    protected void executeRemote(IntentContext context, String[] arguments, CompudahPlugin plugin) {
+        List<String> names = new ArrayList<String>();
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            names.add(onlinePlayer.getName());
+        }
+        plugin.getResponseManager().send(null, names.isEmpty() ? "The server is empty. The silence is suspicious."
+                : "Online players: " + String.join(", ", names));
+        IntentSupport.complete(context, plugin, getName(), "server-list");
     }
 }

@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 import shadowlord.compudah.CompudahPlugin;
 import shadowlord.compudah.core.IntentSupport;
+import shadowlord.compudah.api.IntentContext;
 
 public class BringIntent extends AbstractIntent {
 
@@ -22,7 +23,22 @@ public class BringIntent extends AbstractIntent {
             return;
         }
         target.teleport(player.getLocation());
-        plugin.getResponseManager().send(player, "Summoning complete. Please welcome " + target.getName() + " to your immediate vicinity.");
         IntentSupport.complete(player, plugin, getName(), target.getName());
+    }
+
+    @Override
+    protected void executeRemote(IntentContext context, String[] arguments, CompudahPlugin plugin) {
+        if (arguments == null || arguments.length < 3 || !arguments[1].equalsIgnoreCase("to")) {
+            plugin.getResponseManager().send(null, "Use: bring <online player> to <another online player>.");
+            return;
+        }
+        Player traveler = IntentSupport.resolveTarget(context, new String[] {arguments[0]}, plugin);
+        Player destination = IntentSupport.resolveTarget(context, new String[] {arguments[2]}, plugin);
+        if (traveler == null || destination == null) {
+            plugin.getResponseManager().send(null, "I could not locate both online players.");
+            return;
+        }
+        traveler.teleport(destination.getLocation());
+        IntentSupport.complete(context, plugin, getName(), traveler.getName() + " to " + destination.getName());
     }
 }

@@ -1,8 +1,9 @@
 name: Compudah
-version: 1.0.0-SNAPSHOT
+version: 2.1.1
 main: shadowlord.compudah.CompudahPlugin
-description: A dramatic, characterful virtual assistant for Spigot servers.
+description: Compudah V2, a configurable server mascot and entertainment system.
 author: ShadowLord
+softdepend: [DiscordSRV]
 commands:
   compudah:
     description: Compudah control and help command.
@@ -14,6 +15,34 @@ permissions:
   compudah.admin:
     description: Allows use of admin controls and configuration reload.
     default: op
+  compudah.bypass.cooldown:
+    description: Bypasses Compudah intent cooldowns.
+    default: op
+  compudah.intent.*:
+    description: Grants access to all Compudah intents.
+    default: false
+    children:
+      compudah.intent.kill: true
+      compudah.intent.heal: true
+      compudah.intent.feed: true
+      compudah.intent.teleport: true
+      compudah.intent.online: true
+      compudah.intent.time: true
+      compudah.intent.weather: true
+      compudah.intent.spawn: true
+      compudah.intent.spawn.set: true
+      compudah.intent.home: true
+      compudah.intent.warp: true
+      compudah.intent.warp.set: true
+      compudah.intent.time.set: true
+      compudah.intent.weather.set: true
+      compudah.intent.gamemode: true
+      compudah.intent.clear: true
+      compudah.intent.give: true
+      compudah.intent.kick: true
+      compudah.intent.ban: true
+      compudah.intent.mute: true
+      compudah.intent.server: true
   compudah.intent.kill:
     description: Allows use of the kill intent.
     default: op

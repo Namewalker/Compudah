@@ -22,8 +22,12 @@ public class LoggingService {
         if (player == null) {
             return;
         }
+        logAction(player.getName(), intentName, target, success);
+    }
+
+    public void logAction(String actorName, String intentName, String target, boolean success) {
         String message = String.format("Player: %s | Intent: %s | Target: %s | Success: %s | Time: %s",
-                player.getName(), intentName, target == null ? "N/A" : target, success, dateFormat.format(new Date()));
+                actorName == null ? "unknown" : actorName, intentName, target == null ? "N/A" : target, success, dateFormat.format(new Date()));
         plugin.getLogger().info(message);
 
         if (plugin.getConfig().getBoolean("logging.file", false)) {

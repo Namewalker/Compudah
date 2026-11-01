@@ -31,7 +31,6 @@ public class SetWarpIntent extends AbstractIntent {
         plugin.getConfig().set(path + ".yaw", location.getYaw());
         plugin.getConfig().set(path + ".pitch", location.getPitch());
         plugin.saveConfig();
-        plugin.getResponseManager().send(player, "Warp " + name + " saved. Spatial bureaucracy has been updated.");
         IntentSupport.complete(player, plugin, getName(), name);
     }
 }

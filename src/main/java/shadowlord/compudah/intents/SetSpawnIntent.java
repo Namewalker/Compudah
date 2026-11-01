@@ -18,7 +18,6 @@ public class SetSpawnIntent extends AbstractIntent {
     public void execute(Player player, String[] arguments, CompudahPlugin plugin) {
         Location location = player.getLocation();
         player.getWorld().setSpawnLocation(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-        plugin.getResponseManager().send(player, "Spawn point updated. The universe has received its new instructions.");
         IntentSupport.complete(player, plugin, getName(), player.getWorld().getName());
     }
 }

@@ -9,11 +9,12 @@ import org.bukkit.entity.Player;
 
 import shadowlord.compudah.CompudahPlugin;
 import shadowlord.compudah.core.IntentSupport;
+import shadowlord.compudah.api.IntentContext;
 
 public class TeleportIntent extends AbstractIntent {
 
     public TeleportIntent() {
-        super("teleport", Arrays.asList("teleport", "tp", "move", "portal"), "compudah.intent.teleport");
+        super("teleport", Arrays.asList("teleport", "tp", "move", "portal", "send me", "take me", "transport me"), "compudah.intent.teleport");
     }
 
     @Override
@@ -34,12 +35,22 @@ public class TeleportIntent extends AbstractIntent {
             plugin.getResponseManager().send(player, "Destination missing. I have prepared the portal and absolutely nowhere to send it.");
             return;
         }
+        if (arguments.length >= 3 && arguments[1].equalsIgnoreCase("to")
+                && (arguments[2].equalsIgnoreCase("me") || arguments[2].equalsIgnoreCase("myself"))) {
+            Player traveler = IntentSupport.resolveTarget(player, new String[] {arguments[0]}, plugin);
+            if (traveler == null) {
+                plugin.getResponseManager().send(player, "I cannot find the passenger. The pickup team is circling the airport.");
+                return;
+            }
+            traveler.teleport(player.getLocation());
+            IntentSupport.complete(player, plugin, getName(), traveler.getName());
+            return;
+        }
         String[] destination = java.util.Arrays.copyOfRange(arguments, targetStart, arguments.length);
         String destinationName = IntentSupport.join(destination);
         if (destinationName.equalsIgnoreCase("spawn")) {
             Location spawn = player.getWorld().getSpawnLocation();
             player.teleport(spawn);
-            plugin.getResponseManager().send(player, "You have been relocated to spawn. Try not to magically vanish again.");
             IntentSupport.complete(player, plugin, getName(), "spawn");
             return;
         }
@@ -51,7 +62,32 @@ public class TeleportIntent extends AbstractIntent {
         }
 
         player.teleport(target.getLocation());
-        plugin.getResponseManager().send(player, "Hyper-speed transport complete. Please keep all limbs inside the vehicle.");
         IntentSupport.complete(player, plugin, getName(), target.getName());
+    }
+
+    @Override
+    protected void executeRemote(IntentContext context, String[] arguments, CompudahPlugin plugin) {
+        if (arguments == null || arguments.length < 3) {
+            plugin.getResponseManager().send(null, "Use: teleport <online player> to <online player or spawn>.");
+            return;
+        }
+        Player traveler = IntentSupport.resolveTarget(context, new String[] {arguments[0]}, plugin);
+        int destinationIndex = arguments[1].equalsIgnoreCase("to") ? 2 : 1;
+        if (traveler == null || destinationIndex >= arguments.length) {
+            plugin.getResponseManager().send(null, "I could not identify the online traveler or destination.");
+            return;
+        }
+        String destinationName = arguments[destinationIndex];
+        if (destinationName.equalsIgnoreCase("spawn")) {
+            traveler.teleport(traveler.getWorld().getSpawnLocation());
+        } else {
+            Player destination = IntentSupport.resolveTarget(context, java.util.Arrays.copyOfRange(arguments, destinationIndex, arguments.length), plugin);
+            if (destination == null) {
+                plugin.getResponseManager().send(null, "I could not locate the destination player.");
+                return;
+            }
+            traveler.teleport(destination.getLocation());
+        }
+        IntentSupport.complete(context, plugin, getName(), traveler.getName() + " to " + destinationName);
     }
 }

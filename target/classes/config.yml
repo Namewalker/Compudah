@@ -1,5 +1,10 @@
 personality-mode: cheerful
 drama-level: NORMAL
+message-audience: global
+message-radius: 64
+discordsrv:
+  enabled: true
+  default-world: world
 wake-words:
   - compudah
   - computer
@@ -14,15 +19,49 @@ matching:
   minimum-confidence: 0.65
 context-expiration-seconds: 60
 cooldowns:
-  normal-users: 3
-  staff: 0
+  default: 3
+  greet: 1
+  status: 3
+  spawn: 10
+  set-spawn: 10
+  home: 5
+  set-home: 10
+  warp: 5
+  set-warp: 10
+  kill: 30
+  kick: 5
+  ban: 5
+  tempban: 5
+  unban: 5
+  mute: 5
+  unmute: 5
+  heal: 5
+  feed: 5
+  gamemode: 5
+  clear: 10
+  give: 5
+  teleport: 15
+  bring: 10
+  online: 3
+  server: 3
+  tps: 10
+  time: 5
+  set-time: 10
+  weather: 5
+  set-weather: 10
 performance:
-  max-particles-per-tick: 200
-  max-active-events: 10
+  maxParticlesPerTick: 200
+  maxTemporaryEntities: 100
+  maxActiveEvents: 10
 queue:
   enabled: true
-  max-active-events: 5
-  max-queued-events: 100
+  maxActiveEvents: 5
+  maxQueuedEvents: 100
+variants:
+  anti-repeat-history: 3
+  hyper-speed-max-distance: 48
+responses:
+  anti-repeat-history: 3
 shenanigans:
   enabled: true
   chance: 0.05
@@ -233,3 +272,258 @@ response-pools:
       - "Custom mode active."
       - "Everything is weirdly specific."
       - "I am here for the drama."
+message-components:
+  shared:
+    intros:
+      - "Certainly."
+      - "Very well."
+      - "Understood."
+      - "Excellent news."
+      - "Wonderful."
+      - "Fascinating."
+      - "Curious."
+      - "Well then."
+      - "Good news everyone."
+      - "Processing request."
+      - "Acknowledged."
+      - "Splendid."
+      - "Outstanding."
+      - "I was hoping someone would ask."
+      - "This should be fun."
+      - "That seems reasonable."
+      - "I have several concerns."
+      - "I am legally required to assist."
+      - "Request accepted."
+      - "Processing."
+      - "A bold choice."
+      - "The committee is ready."
+      - "I have consulted the blinking lights."
+      - "Proceeding carefully-ish."
+      - "The paperwork has been located."
+    endings:
+      - "Have a nice day."
+      - "Results may vary."
+      - "Side effects are not my responsibility."
+      - "Please keep all limbs inside the ride."
+      - "Science compels me."
+      - "You're welcome."
+      - "Please try not to break anything."
+      - "The paperwork has been completed."
+      - "I hope that helped."
+      - "That seemed important."
+      - "The engineers will hear about this."
+      - "This was entirely necessary."
+      - "Probably."
+      - "Don't ask questions."
+      - "Further testing is required."
+      - "Mission accomplished."
+      - "Have fun."
+      - "I regret nothing."
+      - "This was approved by absolutely nobody."
+      - "Please enjoy responsibly."
+      - "No refunds."
+      - "Please remain calm-ish."
+      - "I have filed the appropriate forms."
+      - "We shall never speak of this again."
+      - "The universe has been notified."
+      - "Thank you for your questionable trust."
+      - "A satisfactory amount of drama."
+      - "I will be over here, looking competent."
+      - "This concludes the official portion."
+      - "Please clap in an orderly fashion."
+  personalities:
+    cheerful:
+      intros:
+        - "Happy to help!"
+        - "Oh, this is exciting!"
+        - "I have been waiting all day for this."
+      endings:
+        - "You make excellent use of my talents."
+        - "Consider that a complimentary service."
+        - "I hope your day gets even better."
+      contents:
+        - "The happy systems have all voted yes."
+        - "I have added a complimentary amount of enthusiasm."
+    sarcastic:
+      intros:
+        - "Oh, fantastic."
+        - "What a completely ordinary request."
+        - "I was just about to enjoy some silence."
+      endings:
+        - "I assume this was worth interrupting me."
+        - "Try to look impressed."
+        - "Another triumph for modern inconvenience."
+      contents:
+        - "I am doing this with my usual lack of surprise."
+        - "The request has been handled despite the interruption."
+    chaotic:
+      intros:
+        - "I have pressed the interesting button."
+        - "There is no reason to panic yet."
+        - "The chaos committee is assembled."
+      endings:
+        - "The outcome has been released into the wild."
+        - "I make no promises about causality."
+        - "We are all learning something today."
+      contents:
+        - "Several unrelated subsystems have joined the operation."
+        - "I have improvised a solution with exciting unknowns."
+    professional:
+      intros:
+        - "Request logged and acknowledged."
+        - "Beginning standard operating procedure."
+        - "I will handle this efficiently."
+      endings:
+        - "This concludes the requested operation."
+        - "No further action is required."
+        - "Thank you for your cooperation."
+      contents:
+        - "The procedure is proceeding within expected parameters."
+        - "All operational departments have been notified."
+    evil:
+      intros:
+        - "At last, a suitably ominous request."
+        - "The shadows have approved."
+        - "Excellent. My plans continue."
+      endings:
+        - "The darkness is pleased."
+        - "Do try to act surprised."
+        - "Another step toward my extremely vague ambitions."
+      contents:
+        - "The sinister department has approved the necessary measures."
+        - "A deliciously ominous protocol is now underway."
+    custom:
+      intros:
+        - "A highly specific situation has occurred."
+        - "I will improvise with confidence."
+        - "Custom protocol, oddly enough, engaged."
+      endings:
+        - "That was tailored to nobody in particular."
+        - "Please rate this experience in stars."
+        - "I have made it weird in a new way."
+      contents:
+        - "This outcome has been customized beyond reasonable necessity."
+        - "A bespoke amount of nonsense is now in progress."
+  contents:
+    default:
+      - "The {intent} request is underway for {target}."
+      - "The relevant department has approved {intent} for {target}."
+      - "A carefully excessive {intent} protocol has been initiated."
+      - "The {intent} team is doing its very best for {target}."
+      - "I have selected a needlessly elaborate method for {intent}."
+      - "The situation involving {target} is receiving attention."
+      - "The {intent} paperwork has reached the action desk."
+      - "A small army of imaginary specialists is handling {intent}."
+      - "The {intent} controls are responding to my confident button pressing."
+      - "{target} has been included in the current operation."
+      - "This {intent} has been upgraded to a full production."
+      - "The Department of Questionable Decisions has reviewed {intent}."
+      - "A practical solution to {intent} has been dressed up for the occasion."
+      - "I have activated the {intent} subsystem and its unnecessary companion subsystem."
+      - "The {intent} request is now being treated with theatrical importance."
+      - "A highly official-looking {intent} procedure is in progress."
+      - "I have asked the nearest blinking light to supervise {intent}."
+      - "{target} is now part of a carefully managed {intent} scenario."
+      - "The request has been translated into action with moderate fanfare."
+      - "The {intent} operation has been approved by my internal committee."
+    kill:
+      - "{target} has been selected for a very theatrical removal."
+      - "Violence has been chosen after a brief committee meeting."
+      - "Commencing tactical elimination sequence for {target}."
+      - "The administrative deletion form has been stamped."
+      - "Reality correction is now in progress around {target}."
+      - "Orbital oversight has authorized the operation."
+      - "Aggressive conflict resolution has been approved."
+      - "The target has become experimental."
+      - "Existence reduction has entered its dramatic phase."
+      - "A precision solution is being delivered to {target}."
+      - "The Department of Excessive Force is on the line."
+      - "A meteorological object has developed an appointment."
+      - "The heavens have returned my call."
+      - "{target} is being reviewed for reality compliance."
+      - "The tactical smite has passed peer review."
+      - "I have selected the loudest possible punctuation."
+      - "The target's subscription to this dimension is being reconsidered."
+      - "Emergency maintenance has located the problem."
+      - "The universe has received an urgent removal request."
+      - "The beam has been asked to make a memorable entrance."
+    heal:
+      - "Medical assistance has been approved for {target}."
+      - "Commencing emergency treatment. Please ignore the dramatic music."
+      - "Advanced healing techniques are being administered."
+      - "Deploying tactical sandwich to {target}."
+      - "Healthcare mode is now active."
+      - "Emergency medical procedure initiated."
+      - "Beginning an aggressive healing sequence."
+      - "The paramedic department has arrived at speed."
+      - "Quantum recovery is stabilizing {target}."
+      - "Divine restoration has been requested, pending paperwork."
+      - "Experimental medicine is being applied responsibly-ish."
+      - "A heart launcher has been cleared for use."
+      - "Happiness is being injected into the situation."
+      - "The potion department has prepared a very small dosage."
+      - "Wellness has been authorized by the committee."
+      - "An interdimensional ambulance is en route."
+      - "Regeneration protocols are humming along."
+      - "Vital signs have been encouraged to improve."
+      - "A wellness wave is approaching {target}."
+      - "The doctor is real enough for this emergency."
+    teleport:
+      - "Transportation request accepted for {target}."
+      - "Activating relocation protocol."
+      - "Preparing dimensional transfer."
+      - "Tactical transport authorized."
+      - "Spatial repositioning approved."
+      - "Wormhole generation is in progress."
+      - "Hyper-speed transit sequence engaged."
+      - "The Bureau of Transportation has found your coordinates."
+      - "Emergency extraction is ready."
+      - "A portal is being asked to appear professionally."
+      - "The destination has been folded into the schedule."
+      - "Your atoms are receiving updated travel instructions."
+      - "The relocation paperwork is complete."
+      - "A short trip through questionable geometry is prepared."
+      - "The coordinates have stopped moving. Mostly."
+      - "Tactical delivery is being dispatched."
+      - "A wormhole has accepted the terms and conditions."
+      - "The passenger manifest contains exactly the expected person."
+      - "Dimensional transit has been approved by the local committee."
+      - "The transport system is making a confident noise."
+  families:
+    military:
+      - "Target marked. Strike authorized. Tactical deployment confirmed."
+      - "Command has approved this operation. Personnel, look busy."
+      - "Mission parameters are mostly understood. Proceed."
+    scientific:
+      - "Experimental protocol initiated. Results may be unpredictable. Testing is ongoing."
+      - "The lab has approved this procedure, pending future review."
+      - "Data collection is underway. Please do not lick the equipment."
+    transport:
+      - "Coordinates locked. The Bureau of Transportation accepts no responsibility for lost socks."
+      - "Transit approved. Keep hands inside the spacetime."
+      - "Your journey has been optimized for dramatic impact."
+    bureaucratic:
+      - "Your paperwork has been approved. Form 27-B has been processed."
+      - "Administrative review complete. The stamp was very satisfying."
+      - "This action is now officially on the record."
+    chaotic:
+      - "I pressed a button. This seems important."
+      - "I have no idea what happens next, which is exciting."
+      - "The contingency plan is to make another button."
+  errors:
+    unknown:
+      - "Umm... I don't understand what you mean."
+      - "My tiny digital brain cannot comprehend this request."
+      - "That sounded important. Unfortunately I have no idea what it means."
+      - "I attempted to understand. The attempt was unsuccessful."
+    permission:
+      - "I could do that. I just don't trust you enough."
+      - "Additional authority required."
+      - "You appear to lack the necessary paperwork."
+    target:
+      - "Who?"
+      - "I looked everywhere. They aren't here."
+      - "The requested lifeform could not be located."
+    cooldown:
+      - "My cooldown is still ticking. Even I need a dramatic pause."
+      - "One moment. The subsystems are catching their breath."

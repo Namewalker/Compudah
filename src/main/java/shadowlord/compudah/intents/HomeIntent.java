@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import shadowlord.compudah.CompudahPlugin;
 import shadowlord.compudah.core.IntentSupport;
+import shadowlord.compudah.api.IntentContext;
 
 public class HomeIntent extends AbstractIntent {
 
@@ -32,7 +33,27 @@ public class HomeIntent extends AbstractIntent {
                 plugin.getConfig().getDouble(path + ".z"), (float) plugin.getConfig().getDouble(path + ".yaw"),
                 (float) plugin.getConfig().getDouble(path + ".pitch"));
         player.teleport(location);
-        plugin.getResponseManager().send(player, "Home, sweet home. I have reduced the dramatic music by 12 percent.");
         IntentSupport.complete(player, plugin, getName(), "home");
+    }
+
+    @Override
+    protected void executeRemote(IntentContext context, String[] arguments, CompudahPlugin plugin) {
+        Player target = arguments == null || arguments.length == 0 ? null
+                : IntentSupport.resolveTarget(context, new String[] {arguments[0]}, plugin);
+        if (target == null) {
+            plugin.getResponseManager().send(null, "Name an online player whose saved home I should open.");
+            return;
+        }
+        String path = "homes." + target.getUniqueId();
+        World world = Bukkit.getWorld(plugin.getConfig().getString(path + ".world", ""));
+        if (!plugin.getConfig().contains(path + ".world") || world == null) {
+            plugin.getResponseManager().send(null, "That player has no saved home in a loaded world.");
+            return;
+        }
+        Location location = new Location(world, plugin.getConfig().getDouble(path + ".x"), plugin.getConfig().getDouble(path + ".y"),
+                plugin.getConfig().getDouble(path + ".z"), (float) plugin.getConfig().getDouble(path + ".yaw"),
+                (float) plugin.getConfig().getDouble(path + ".pitch"));
+        target.teleport(location);
+        IntentSupport.complete(context, plugin, getName(), target.getName());
     }
 }

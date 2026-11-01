@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 
 import shadowlord.compudah.CompudahPlugin;
 import shadowlord.compudah.core.IntentSupport;
+import shadowlord.compudah.api.IntentContext;
 
 public class SetTimeIntent extends AbstractIntent {
 
@@ -42,7 +43,32 @@ public class SetTimeIntent extends AbstractIntent {
             }
         }
         player.getWorld().setTime(time);
-        plugin.getResponseManager().send(player, "Time adjusted. The celestial schedule has been strongly encouraged.");
         IntentSupport.complete(player, plugin, getName(), requested);
+    }
+
+    @Override
+    protected void executeRemote(IntentContext context, String[] arguments, CompudahPlugin plugin) {
+        org.bukkit.World world = IntentSupport.getRemoteWorld(plugin);
+        if (world == null || arguments == null || arguments.length == 0) {
+            plugin.getResponseManager().send(null, "Name a time and ensure a default world is loaded.");
+            return;
+        }
+        String requested = IntentSupport.join(arguments).toLowerCase(Locale.ENGLISH);
+        long time;
+        if (requested.equals("day") || requested.equals("morning")) time = 1000L;
+        else if (requested.equals("noon")) time = 6000L;
+        else if (requested.equals("night") || requested.equals("evening")) time = 13000L;
+        else if (requested.equals("midnight")) time = 18000L;
+        else {
+            try {
+                time = Long.parseLong(arguments[0]);
+                if (time < 0L || time > 23999L) throw new NumberFormatException();
+            } catch (NumberFormatException exception) {
+                plugin.getResponseManager().send(null, "That is not a valid Minecraft time.");
+                return;
+            }
+        }
+        world.setTime(time);
+        IntentSupport.complete(context, plugin, getName(), world.getName());
     }
 }

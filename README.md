@@ -994,3 +994,15 @@ FINAL GOAL:
 Compudah should feel like a living part of the server.
 
 Every interaction should be memorable, entertaining, configurable, performant, and distinct from previous interactions while always ending in the intended result.
+
+==================================================
+COMPUDAH 2.1.1 DISCORD REQUESTS
+==================================================
+
+DiscordSRV requests require a linked Discord account, but the linked Minecraft account does not need to be online.
+
+The request uses the linked UUID and is always treated as a non-operator request. Only intents in allowed-player-intents are available to it, even when the linked Minecraft account is an operator.
+
+Remote requests can inspect server-wide information or act on explicitly named online players. Actions that need the requester's live location or inventory require an online target or must be performed in-game.
+
+Set discordsrv.default-world to select the world used by remote time and weather requests.

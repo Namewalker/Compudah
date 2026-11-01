@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 
 import shadowlord.compudah.CompudahPlugin;
 import shadowlord.compudah.core.IntentSupport;
+import shadowlord.compudah.api.IntentContext;
 
 public class TpsIntent extends AbstractIntent {
 
@@ -17,6 +18,17 @@ public class TpsIntent extends AbstractIntent {
 
     @Override
     public void execute(Player player, String[] arguments, CompudahPlugin plugin) {
+        report(player, plugin, false);
+        IntentSupport.complete(player, plugin, getName(), "server-tps");
+    }
+
+    @Override
+    protected void executeRemote(IntentContext context, String[] arguments, CompudahPlugin plugin) {
+        report(null, plugin, true);
+        IntentSupport.complete(context, plugin, getName(), "server-tps");
+    }
+
+    private void report(Player player, CompudahPlugin plugin, boolean remote) {
         try {
             Method getTps = Bukkit.getServer().getClass().getMethod("getTPS");
             Object result = getTps.invoke(Bukkit.getServer());
@@ -30,6 +42,5 @@ public class TpsIntent extends AbstractIntent {
         } catch (ReflectiveOperationException exception) {
             plugin.getResponseManager().send(player, "This server build does not expose TPS readings. Its secrets are well protected.");
         }
-        IntentSupport.complete(player, plugin, getName(), "server-tps");
     }
 }

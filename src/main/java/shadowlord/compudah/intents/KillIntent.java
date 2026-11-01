@@ -6,11 +6,13 @@ import org.bukkit.entity.Player;
 
 import shadowlord.compudah.CompudahPlugin;
 import shadowlord.compudah.core.IntentSupport;
+import shadowlord.compudah.api.IntentContext;
 
 public class KillIntent extends AbstractIntent {
 
     public KillIntent() {
-        super("kill", Arrays.asList("kill", "eliminate", "destroy", "delete", "remove", "smite", "obliterate"), "compudah.intent.kill");
+        super("kill", Arrays.asList("kill", "eliminate", "destroy", "delete", "remove", "smite", "obliterate",
+            "erase", "get rid of", "make disappear", "send to jesus"), "compudah.intent.kill");
     }
 
     @Override
@@ -26,23 +28,20 @@ public class KillIntent extends AbstractIntent {
             return;
         }
 
-        final Player selectedTarget = target;
-        Runnable finishKill = new Runnable() {
-            @Override
-            public void run() {
-                if (!selectedTarget.isOnline() || !selectedTarget.isValid()) {
-                    player.sendMessage("[Compudah] Target escaped the blast radius. I shall pretend that was intentional.");
-                    return;
-                }
-                selectedTarget.damage(9999.0D, player);
-                plugin.getPlayerContextMemory().remember(player.getUniqueId(), selectedTarget.getName());
-                plugin.getResponseManager().send(player, "Violence selected. " + selectedTarget.getName() + " has entered a rather unfortunate phase of existence.");
-                IntentSupport.complete(player, plugin, getName(), selectedTarget.getName());
-            }
-        };
+        target.damage(9999.0D, player);
+        plugin.getPlayerContextMemory().remember(player.getUniqueId(), target.getName());
+        IntentSupport.complete(player, plugin, getName(), target.getName());
+    }
 
-        if (!plugin.getDramaticEventManager().runOrbitalSequence(player, selectedTarget, finishKill)) {
-            finishKill.run();
+    @Override
+    protected void executeRemote(IntentContext context, String[] arguments, CompudahPlugin plugin) {
+        Player target = IntentSupport.resolveTarget(context, arguments, plugin);
+        if (target == null) {
+            plugin.getResponseManager().send(null, "Name an online player. I cannot apply a tactical removal to an offline account.");
+            return;
         }
+        target.damage(9999.0D);
+        plugin.getPlayerContextMemory().remember(context.getUniqueId(), target.getName());
+        IntentSupport.complete(context, plugin, getName(), target.getName());
     }
 }

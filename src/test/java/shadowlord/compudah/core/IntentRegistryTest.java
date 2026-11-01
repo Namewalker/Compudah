@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 
 import shadowlord.compudah.CompudahPlugin;
 import shadowlord.compudah.api.Intent;
+import shadowlord.compudah.intents.HealIntent;
+import shadowlord.compudah.intents.KillIntent;
 import shadowlord.compudah.intents.TeleportIntent;
 import shadowlord.compudah.intents.WarpIntent;
 
@@ -45,5 +47,16 @@ class IntentRegistryTest {
         registry.register(new TeleportIntent());
 
         assertEquals("warp", registry.resolveCommand("warp market").getIntent().getName());
+    }
+
+    @Test
+    void shouldResolveV2NaturalPhrasings() {
+        IntentRegistry registry = new IntentRegistry();
+        registry.register(new KillIntent());
+        registry.register(new HealIntent());
+
+        assertEquals("kill", registry.resolveCommand("get rid of op").getIntent().getName());
+        assertEquals("op", registry.resolveCommand("get rid of op").getArguments()[0]);
+        assertEquals("heal", registry.resolveCommand("i m dying").getIntent().getName());
     }
 }
