@@ -34,9 +34,11 @@ shadowlord/compudah/api/Intent.class
 shadowlord/compudah/core/VariantManager.class
 shadowlord/compudah/core/EventQueueManager.class
 shadowlord/compudah/core/WakeWordDetector.class
+shadowlord/compudah/core/LocalInterpreter$PreparedRequest.class
 shadowlord/compudah/core/DramaticEventManager$4.class
 shadowlord/compudah/intents/BringIntent.class
 shadowlord/compudah/intents/TpsIntent.class
+shadowlord/compudah/core/PerformanceManager$2.class
 shadowlord/compudah/core/DramaticEventManager.class
 shadowlord/compudah/intents/OnlinePlayersIntent.class
 shadowlord/compudah/core/PlayerContextMemory.class

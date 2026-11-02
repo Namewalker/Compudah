@@ -3,15 +3,12 @@ package shadowlord.compudah.core;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.FallingBlock;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -24,21 +21,13 @@ public class PerformanceManager {
     private final Map<FallingBlock, Long> temporaryBlocks = new HashMap<FallingBlock, Long>();
     private final Map<UUID, Long> fallProtection = new HashMap<UUID, Long>();
     private BukkitTask cleanupTask;
+    private BukkitTask visualResetTask;
     private long tick;
     private int visualsThisTick;
     private int activeEvents;
 
     public PerformanceManager(CompudahPlugin plugin) {
         this.plugin = plugin;
-        cleanupTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                tick++;
-                visualsThisTick = 0;
-                cleanupExpired();
-                cleanupFallProtection();
-            }
-        }.runTaskTimer(plugin, 1L, 1L);
     }
 
     public synchronized boolean consumeVisualBudget(int amount) {
@@ -47,6 +36,17 @@ public class PerformanceManager {
             return false;
         }
         visualsThisTick += amount;
+        if (visualResetTask == null) {
+            visualResetTask = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    synchronized (PerformanceManager.this) {
+                        visualsThisTick = 0;
+                        visualResetTask = null;
+                    }
+                }
+            }.runTaskLater(plugin, 1L);
+        }
         return true;
     }
 
@@ -80,18 +80,20 @@ public class PerformanceManager {
         block.setDropItem(false);
         block.setHurtEntities(false);
         temporaryBlocks.put(block, tick + Math.max(1, Math.min(100, lifetimeTicks)));
+        ensureCleanupTask();
         return true;
     }
 
     public synchronized void protectFromFall(Player player, int durationTicks) {
         if (player != null && durationTicks > 0) {
-            fallProtection.put(player.getUniqueId(), tick + Math.min(durationTicks, 200));
+            fallProtection.put(player.getUniqueId(), System.currentTimeMillis() + Math.min(durationTicks, 200) * 50L);
+            ensureCleanupTask();
         }
     }
 
     public synchronized boolean isFallProtected(UUID playerId) {
         Long expiration = fallProtection.get(playerId);
-        return expiration != null && expiration > tick;
+        return expiration != null && expiration > System.currentTimeMillis();
     }
 
     public synchronized boolean preventVisualBlockPlacement(FallingBlock block) {
@@ -115,21 +117,43 @@ public class PerformanceManager {
     }
 
     private synchronized void cleanupFallProtection() {
-        Set<UUID> expired = new HashSet<UUID>();
-        for (Map.Entry<UUID, Long> entry : fallProtection.entrySet()) {
-            if (entry.getValue() <= tick) {
-                expired.add(entry.getKey());
+        Iterator<Map.Entry<UUID, Long>> iterator = fallProtection.entrySet().iterator();
+        long now = System.currentTimeMillis();
+        while (iterator.hasNext()) {
+            if (iterator.next().getValue() <= now) {
+                iterator.remove();
             }
         }
-        for (UUID playerId : expired) {
-            fallProtection.remove(playerId);
+    }
+
+    private synchronized void ensureCleanupTask() {
+        if (cleanupTask != null) {
+            return;
         }
+        cleanupTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                tick++;
+                cleanupExpired();
+                cleanupFallProtection();
+                synchronized (PerformanceManager.this) {
+                    if (temporaryBlocks.isEmpty() && fallProtection.isEmpty()) {
+                        cancel();
+                        cleanupTask = null;
+                    }
+                }
+            }
+        }.runTaskTimer(plugin, 1L, 1L);
     }
 
     public synchronized void shutdown() {
         if (cleanupTask != null) {
             cleanupTask.cancel();
             cleanupTask = null;
+        }
+        if (visualResetTask != null) {
+            visualResetTask.cancel();
+            visualResetTask = null;
         }
         for (FallingBlock block : temporaryBlocks.keySet()) {
             if (block.isValid()) {

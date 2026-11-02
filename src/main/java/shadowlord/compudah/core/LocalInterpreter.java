@@ -33,22 +33,49 @@ public class LocalInterpreter implements IntentInterpreter {
     }
 
     public void interpret(IntentContext context, String rawMessage, ChatOrigin origin) {
-        if (context == null || rawMessage == null || rawMessage.trim().isEmpty()) {
+        interpret(context, prepare(rawMessage), origin);
+    }
+
+    public PreparedRequest prepare(String rawMessage) {
+        if (rawMessage == null || rawMessage.trim().isEmpty()) {
+            return null;
+        }
+        String addressedCommand = wakeWordDetector.extractCommandIfAddressed(rawMessage);
+        if (addressedCommand == null) {
+            return null;
+        }
+        String command = stripPolitePrefix(addressedCommand);
+        ImmediateRequest immediateRequest = removeImmediatePhrases(command);
+        command = immediateRequest.getCommand();
+        if (command == null || command.trim().isEmpty()) {
+            return new PreparedRequest(true, true, null, new String[0], immediateRequest.isImmediate());
+        }
+        IntentRegistry.Resolution resolution = intentRegistry.resolveCommand(command);
+        return new PreparedRequest(true, false, resolution.getIntent(), resolution.getArguments(), immediateRequest.isImmediate());
+    }
+
+    public void interpret(Player player, PreparedRequest request, ChatOrigin origin) {
+        if (player == null) {
+            return;
+        }
+        IntentContext context = origin == ChatOrigin.DISCORD
+                ? IntentContext.forDiscord(player) : IntentContext.forInGame(player);
+        interpret(context, request, origin);
+    }
+
+    public void interpret(IntentContext context, PreparedRequest request, ChatOrigin origin) {
+        if (context == null || request == null || !request.isAddressed()) {
             return;
         }
         Player player = context.getPlayer();
         boolean inGameOperator = ChatAuthority.isInGameOperator(origin, context.isInGameOperator());
 
-        String command = stripPolitePrefix(wakeWordDetector.extractCommand(rawMessage));
-        ImmediateRequest immediateRequest = removeImmediatePhrases(command);
-        command = immediateRequest.getCommand();
-        if (command == null || command.trim().isEmpty()) {
+        if (request.isEmptyCommand()) {
             plugin.getResponseManager().send(player, "I am listening. Tell me what you want, and do try to be less vague.");
             return;
         }
 
-        IntentRegistry.Resolution resolution = intentRegistry.resolveCommand(command);
-        Intent intent = resolution.getIntent();
+        Intent intent = request.getIntent();
         if (intent == null) {
             plugin.getResponseManager().send(player, "I do not understand that request. Try 'heal', 'feed', 'set time day', 'spawn', or 'online'.");
             return;
@@ -78,18 +105,54 @@ public class LocalInterpreter implements IntentInterpreter {
             }
         }
 
-        if (immediateRequest.isImmediate()) {
+        if (request.isImmediate()) {
             plugin.getResponseManager().send(player, "Aww. I was going to use the " + intent.getName() + " theatrics. Speed requested. Fun denied.");
         }
 
         if (plugin.getVariantManager() == null) {
-            intent.execute(context, resolution.getArguments(), plugin);
+            intent.execute(context, request.getArguments(), plugin);
             return;
         }
         try {
-            plugin.getVariantManager().execute(context, resolution.getArguments(), plugin, intent, immediateRequest.isImmediate());
+            plugin.getVariantManager().execute(context, request.getArguments(), plugin, intent, request.isImmediate());
         } catch (UnsupportedOperationException exception) {
             plugin.getResponseManager().send(player, "That custom intent requires you to be online in-game.");
+        }
+    }
+
+    public static final class PreparedRequest {
+        private final boolean addressed;
+        private final boolean emptyCommand;
+        private final Intent intent;
+        private final String[] arguments;
+        private final boolean immediate;
+
+        private PreparedRequest(boolean addressed, boolean emptyCommand, Intent intent, String[] arguments, boolean immediate) {
+            this.addressed = addressed;
+            this.emptyCommand = emptyCommand;
+            this.intent = intent;
+            this.arguments = arguments == null ? new String[0] : arguments.clone();
+            this.immediate = immediate;
+        }
+
+        public boolean isAddressed() {
+            return addressed;
+        }
+
+        public boolean isEmptyCommand() {
+            return emptyCommand;
+        }
+
+        public Intent getIntent() {
+            return intent;
+        }
+
+        public String[] getArguments() {
+            return arguments.clone();
+        }
+
+        public boolean isImmediate() {
+            return immediate;
         }
     }
 

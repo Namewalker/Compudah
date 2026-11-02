@@ -122,7 +122,7 @@ public final class BuiltInVariantFactory {
                     plugin.getPerformanceManager().protectFromFall(target, 100);
                     target.setVelocity(new Vector(0.0D, 0.8D, 0.0D));
                     plugin.getResponseManager().send(player, "Gravity demonstration commencing. Please enjoy the brief flight.");
-                    new BukkitRunnable() {
+                        new BukkitRunnable() {
                         @Override
                         public void run() {
                             try {

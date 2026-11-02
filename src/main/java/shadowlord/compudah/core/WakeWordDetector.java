@@ -3,8 +3,14 @@ package shadowlord.compudah.core;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
+import java.util.regex.Pattern;
 
 public class WakeWordDetector {
+
+    private static final Pattern PUNCTUATION = Pattern.compile("[.,!?;:]+");
+    private static final Pattern NON_WORD = Pattern.compile("[^a-z0-9\\s]");
+    private static final Pattern WHITESPACE = Pattern.compile("\\s+");
 
     private final List<String> wakeWords;
 
@@ -34,7 +40,10 @@ public class WakeWordDetector {
         if (message == null) {
             return null;
         }
-        String normalized = normalize(message);
+        return findWakeWord(normalize(message));
+    }
+
+    private String findWakeWord(String normalized) {
         for (String wakeWord : wakeWords) {
             if (normalized.equals(wakeWord) || normalized.startsWith(wakeWord + " ")
                     || normalized.contains(" " + wakeWord + " ") || normalized.endsWith(" " + wakeWord)) {
@@ -48,10 +57,18 @@ public class WakeWordDetector {
         if (message == null) {
             return "";
         }
+        String addressedCommand = extractCommandIfAddressed(message);
+        return addressedCommand == null ? normalize(message) : addressedCommand;
+    }
+
+    public String extractCommandIfAddressed(String message) {
+        if (message == null) {
+            return null;
+        }
         String normalized = normalize(message);
-        String wakeWord = extractWakeWord(message);
+        String wakeWord = findWakeWord(normalized);
         if (wakeWord == null || wakeWord.isEmpty()) {
-            return normalized;
+            return null;
         }
 
         int index = normalized.indexOf(wakeWord);
@@ -62,18 +79,17 @@ public class WakeWordDetector {
         if (commandStart >= normalized.length()) {
             return "";
         }
-        String command = normalized.substring(commandStart).trim();
-        return command.replaceAll("\\s+", " ").trim();
+        return normalized.substring(commandStart).trim();
     }
 
     public String normalize(String value) {
         if (value == null) {
             return "";
         }
-        String normalized = value.toLowerCase();
-        normalized = normalized.replaceAll("[.,!?;:]+", " ");
-        normalized = normalized.replaceAll("[^a-z0-9\\s]", " ");
-        normalized = normalized.replaceAll("\\s+", " ").trim();
+        String normalized = value.toLowerCase(Locale.ENGLISH);
+        normalized = PUNCTUATION.matcher(normalized).replaceAll(" ");
+        normalized = NON_WORD.matcher(normalized).replaceAll(" ");
+        normalized = WHITESPACE.matcher(normalized).replaceAll(" ").trim();
         return normalized;
     }
 

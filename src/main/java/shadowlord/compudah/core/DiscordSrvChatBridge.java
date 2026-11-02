@@ -126,7 +126,8 @@ public class DiscordSrvChatBridge implements Listener {
         }
         final String message = extractMessage(event);
         final String authorId = extractAuthorId(event);
-        if (message == null || authorId == null || !plugin.getWakeWordDetector().containsWakeWord(message)
+        final LocalInterpreter.PreparedRequest request = message == null ? null : plugin.getLocalInterpreter().prepare(message);
+        if (request == null || authorId == null
                 || wasRecentlyHandled(authorId, extractMessageId(event), message)) {
             return;
         }
@@ -161,7 +162,7 @@ public class DiscordSrvChatBridge implements Listener {
         plugin.getServer().getScheduler().runTask(plugin, new Runnable() {
             @Override
             public void run() {
-                plugin.getLocalInterpreter().interpret(context, message, ChatOrigin.DISCORD);
+                plugin.getLocalInterpreter().interpret(context, request, ChatOrigin.DISCORD);
             }
         });
     }

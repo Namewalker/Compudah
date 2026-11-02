@@ -2,6 +2,7 @@ package shadowlord.compudah.core;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,5 +27,6 @@ class WakeWordDetectorTest {
 
         assertFalse(detector.containsWakeWord("please heal me"));
         assertFalse(detector.containsWakeWord("hello there friend"));
+        assertNull(detector.extractCommandIfAddressed("hello there friend"));
     }
 }

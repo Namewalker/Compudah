@@ -23,7 +23,7 @@ public class CompudahChatListener implements Listener {
         if (plugin.getMuteManager().isMuted(event.getPlayer().getUniqueId())) {
             event.setCancelled(true);
             final org.bukkit.entity.Player mutedPlayer = event.getPlayer();
-            plugin.getServer().getScheduler().runTask(plugin, new Runnable() {
+            runOnMainThread(event, new Runnable() {
                 @Override
                 public void run() {
                     plugin.getResponseManager().send(mutedPlayer, "Your words are currently on a brief administrative vacation.");
@@ -32,18 +32,27 @@ public class CompudahChatListener implements Listener {
             return;
         }
         String message = event.getMessage();
-        if (!plugin.getWakeWordDetector().containsWakeWord(message)) {
+        final LocalInterpreter.PreparedRequest request = plugin.getLocalInterpreter().prepare(message);
+        if (request == null) {
             return;
         }
 
         event.setCancelled(true);
         final org.bukkit.entity.Player player = event.getPlayer();
-        plugin.getServer().getScheduler().runTask(plugin, new Runnable() {
+        runOnMainThread(event, new Runnable() {
             @Override
             public void run() {
-                plugin.getLocalInterpreter().interpret(player, message, ChatOrigin.IN_GAME);
+                plugin.getLocalInterpreter().interpret(player, request, ChatOrigin.IN_GAME);
             }
         });
+    }
+
+    private void runOnMainThread(AsyncPlayerChatEvent event, Runnable task) {
+        if (event.isAsynchronous()) {
+            plugin.getServer().getScheduler().runTask(plugin, task);
+        } else {
+            task.run();
+        }
     }
 
     @EventHandler

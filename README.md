@@ -1006,3 +1006,11 @@ The request uses the linked UUID and is always treated as a non-operator request
 Remote requests can inspect server-wide information or act on explicitly named online players. Actions that need the requester's live location or inventory require an online target or must be performed in-game.
 
 Set discordsrv.default-world to select the world used by remote time and weather requests.
+
+==================================================
+COMPUDAH 2.1.2 RESPONSE PERFORMANCE
+==================================================
+
+Chat requests are parsed and intent-resolved before being queued for main-thread Bukkit actions. Idle performance cleanup does not schedule a repeating task; cleanup runs only while temporary visuals or protections are active.
+
+Theatrical timing defaults are unchanged in this release.

@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import shadowlord.compudah.api.Intent;
 
 public class IntentRegistry {
 
-    private final Map<String, Intent> intents = new LinkedHashMap<String, Intent>();
+    private final Map<String, Intent> intents = new ConcurrentHashMap<String, Intent>();
 
-    public void register(Intent intent) {
+    public synchronized void register(Intent intent) {
         if (intent == null) {
             return;
         }
@@ -27,32 +28,36 @@ public class IntentRegistry {
         return intents.get(action.trim().toLowerCase());
     }
 
-    public Resolution resolveCommand(String command) {
+    public synchronized Resolution resolveCommand(String command) {
         if (command == null || command.trim().isEmpty()) {
             return new Resolution(null, new String[0]);
         }
 
         String normalized = command.trim().toLowerCase();
         String[] words = normalized.split("\\s+");
-        for (int count = words.length; count > 0; count--) {
-            StringBuilder alias = new StringBuilder();
-            for (int index = 0; index < count; index++) {
-                if (index > 0) {
-                    alias.append(' ');
-                }
-                alias.append(words[index]);
+        StringBuilder alias = new StringBuilder();
+        Intent bestIntent = null;
+        int bestWordCount = 0;
+        for (int index = 0; index < words.length; index++) {
+            if (index > 0) {
+                alias.append(' ');
             }
-            Intent intent = intents.get(alias.toString());
-            if (intent != null) {
-                String[] arguments = new String[words.length - count];
-                System.arraycopy(words, count, arguments, 0, arguments.length);
-                return new Resolution(intent, arguments);
+            alias.append(words[index]);
+            Intent candidate = intents.get(alias.toString());
+            if (candidate != null) {
+                bestIntent = candidate;
+                bestWordCount = index + 1;
             }
+        }
+        if (bestIntent != null) {
+            String[] arguments = new String[words.length - bestWordCount];
+            System.arraycopy(words, bestWordCount, arguments, 0, arguments.length);
+            return new Resolution(bestIntent, arguments);
         }
         return new Resolution(null, words);
     }
 
-    public List<Intent> getIntents() {
+    public synchronized List<Intent> getIntents() {
         List<Intent> result = new ArrayList<Intent>();
         for (Intent intent : intents.values()) {
             if (!result.contains(intent)) {
