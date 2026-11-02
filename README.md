@@ -1014,3 +1014,9 @@ COMPUDAH 2.1.2 RESPONSE PERFORMANCE
 Chat requests are parsed and intent-resolved before being queued for main-thread Bukkit actions. Idle performance cleanup does not schedule a repeating task; cleanup runs only while temporary visuals or protections are active.
 
 Theatrical timing defaults are unchanged in this release.
+
+==================================================
+COMPUDAH 2.1.3 CHAT VISIBILITY
+==================================================
+
+Wake-word requests sent by in-game players are processed without canceling the player's chat message, so the request remains visible to the server. Muted-player messages remain canceled.

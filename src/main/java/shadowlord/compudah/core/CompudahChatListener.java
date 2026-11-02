@@ -37,7 +37,6 @@ public class CompudahChatListener implements Listener {
             return;
         }
 
-        event.setCancelled(true);
         final org.bukkit.entity.Player player = event.getPlayer();
         runOnMainThread(event, new Runnable() {
             @Override
